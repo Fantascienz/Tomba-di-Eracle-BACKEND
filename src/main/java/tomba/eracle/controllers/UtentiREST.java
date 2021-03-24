@@ -1,5 +1,8 @@
 package tomba.eracle.controllers;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ public class UtentiREST {
 	public ResponseEntity<Utente> registrazione(@RequestBody Utente utente) {
 		System.out.println("registrazione");
 		try {
+			codificaPassword(utente);
 			utente.setTipo("standard");
 			utente = utentiRepo.save(utente);
 		} catch (Exception e) {
@@ -49,6 +53,20 @@ public class UtentiREST {
 		}		
 		return ResponseEntity.ok(utente);
 
+	}
+	
+	private void codificaPassword(Utente u) {
+		String password = u.getPsw();
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = md.digest(password.getBytes());
+			BigInteger number = new BigInteger(1, messageDigest);
+			String codPass = number.toString(16);
+			u.setPsw(codPass);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
