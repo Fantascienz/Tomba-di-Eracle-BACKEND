@@ -46,7 +46,8 @@ public class UtentiREST {
 
 	@PostMapping( path = "/login", consumes = "application/json", produces = "application/json")
 	@CrossOrigin(origins = "http://localhost:3000")
-	public ResponseEntity<Utente> login(@RequestBody Utente utente) {		
+	public ResponseEntity<Utente> login(@RequestBody Utente utente) {	
+		codificaPassword(utente);
 		utente = utentiRepo.findByEmailAndPsw(utente.getEmail(), utente.getPsw());		
 		if (utente == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
