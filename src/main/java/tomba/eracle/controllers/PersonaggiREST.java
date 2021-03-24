@@ -3,6 +3,7 @@ package tomba.eracle.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,29 +23,35 @@ public class PersonaggiREST {
 
 	@Autowired
 	private PersonaggiRepo personaggiRepo;
-	
-	
-	@GetMapping(path="/{id}", consumes = "application/json", produces = "application/json")
+
+	@GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> findByIdUser(@PathVariable("id") Long idUser) {
-		
+
 		List<Personaggio> models = personaggiRepo.findByIdUser(idUser);
-		
+
 		return ResponseEntity.ok(models);
 	}
-	
+
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<Personaggio> createPg(@RequestBody Personaggio model) {
-		
+		if(!findByNominativo(model)) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+		}
 		model.setChirottero(false);
 		model.setUmbra(false);
 		personaggiRepo.save(model);
-		
+
 		return ResponseEntity.ok(model);
 	}
+
+	private boolean findByNominativo(Personaggio model) {
+		model = personaggiRepo.findByNominativo(model.getNominativo());
+		if (model != null) {
+			return false;
+		}
+		
+		return true;
 	
-	
-	
-	
-	
-	
+	}
+
 }

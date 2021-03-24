@@ -12,4 +12,6 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	@Query(nativeQuery = true, value="SELECT * FROM personaggi WHERE id_utente = :id")	
 	public List<Personaggio> findByIdUser(@Param("id") Long id);
+	
+	public Personaggio findByNominativo(String nominativo);
 }
