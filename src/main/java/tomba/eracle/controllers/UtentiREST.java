@@ -29,28 +29,24 @@ public class UtentiREST {
 
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin(origins = "http://localhost:3000")
-	public ResponseEntity<Utente> createUser(@RequestBody Utente utente) {
+	public ResponseEntity<Utente> registrazione(@RequestBody Utente utente) {
 		System.out.println("registrazione");
 		try {
-			utente.setTipo("standard"); //INTEGRARE NEL FORM
+			utente.setTipo("standard");
 			utente = utentiRepo.save(utente);
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // gestire lato front end il null come "email
-																			// già registrata"
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(null); 
 		}
 		return ResponseEntity.ok(utente);
 	}
 
 	@PostMapping( path = "/login", consumes = "application/json", produces = "application/json")
 	@CrossOrigin(origins = "http://localhost:3000")
-	public ResponseEntity<Utente> login(@RequestBody Utente utente) {
-		
-		utente = utentiRepo.findByEmailAndPsw(utente.getEmail(), utente.getPsw());
-		
+	public ResponseEntity<Utente> login(@RequestBody Utente utente) {		
+		utente = utentiRepo.findByEmailAndPsw(utente.getEmail(), utente.getPsw());		
 		if (utente == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-		}
-		
+		}		
 		return ResponseEntity.ok(utente);
 
 	}
