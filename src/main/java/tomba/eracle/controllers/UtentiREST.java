@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tomba.eracle.entitites.Utente;
+import tomba.eracle.pojo.ModificaUtente;
 import tomba.eracle.repositories.UtentiRepo;
 
 @RestController
@@ -33,7 +34,6 @@ public class UtentiREST {
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin(origins = "http://localhost:3000")
 	public ResponseEntity<Utente> registrazione(@RequestBody Utente utente) {
-		System.out.println("registrazione");
 		try {
 			codificaPassword(utente);
 			utente.setTipo("standard");
@@ -54,6 +54,14 @@ public class UtentiREST {
 		}		
 		return ResponseEntity.ok(utente);
 
+	}
+	
+	@PostMapping(path = "/modifica",consumes = "application/json", produces = "application/json")
+	@CrossOrigin(origins = "http://localhost:3000")
+	public ResponseEntity<Utente> modificaUtente (@RequestBody ModificaUtente mod) {
+		System.out.println(mod.getUtente().toString());
+		System.out.println(mod.getVecchiaPsw());
+		return null;
 	}
 	
 	private void codificaPassword(Utente u) {
