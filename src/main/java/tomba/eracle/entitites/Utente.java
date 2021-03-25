@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Entity
@@ -63,6 +65,7 @@ public class Utente {
 	
 =======
 	@OneToMany(mappedBy = "utente")
+	@JsonIgnore
 	private List<Personaggio> personaggi;
 	
 >>>>>>> 2c8e63b (risolti conflitti)
