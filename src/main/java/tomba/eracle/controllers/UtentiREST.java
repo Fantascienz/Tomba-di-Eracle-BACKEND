@@ -27,8 +27,13 @@ public class UtentiREST {
 	private UtentiRepo utentiRepo;
 
 	@GetMapping(produces = "application/json")
+	@CrossOrigin
 	public List<Utente> getAll() {
-		return (List<Utente>) utentiRepo.findAll();
+		List<Utente> lista = (List<Utente>) utentiRepo.findAll();
+		for (Utente u : lista) {
+			setNumeroPg(u);
+		}
+		return lista;
 	}
 
 	@PostMapping(consumes = "application/json")
@@ -100,6 +105,10 @@ public class UtentiREST {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private void setNumeroPg(Utente u) {
+		u.setNumeroPersonaggi(utentiRepo.findNumeroPgUtente(u.getId()));
 	}
 
 }
