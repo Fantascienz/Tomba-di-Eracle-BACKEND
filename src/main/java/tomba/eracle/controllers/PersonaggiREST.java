@@ -32,6 +32,7 @@ public class PersonaggiREST {
 		return ResponseEntity.ok(personaggiUtente);
 	}
 
+	@CrossOrigin
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<Personaggio> createPg(@RequestBody Personaggio model) {
 		if(!findByNominativo(model)) {
