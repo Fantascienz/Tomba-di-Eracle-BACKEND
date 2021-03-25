@@ -27,6 +27,7 @@ public class UtentiREST {
 	private UtentiRepo utentiRepo;
 
 	@GetMapping(produces = "application/json")
+	@CrossOrigin
 	public List<Utente> getAll() {
 		return (List<Utente>) utentiRepo.findAll();
 	}

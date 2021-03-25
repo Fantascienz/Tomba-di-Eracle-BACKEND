@@ -6,32 +6,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tomba.eracle.entitites.Personaggio;
+import tomba.eracle.entitites.Utente;
 import tomba.eracle.repositories.PersonaggiRepo;
 
 @RestController
 @RequestMapping("/personaggi")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PersonaggiREST {
 
 	@Autowired
 	private PersonaggiRepo personaggiRepo;
 
-	@GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<List<Personaggio>> findByIdUser(@PathVariable("id") Long idUser) {
+	
+	@CrossOrigin
+	@PostMapping(path = "/user", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> findByUser(@RequestBody Utente utente) {
 
-		List<Personaggio> models = personaggiRepo.findByIdUser(idUser);
+		List<Personaggio> personaggiUtente = personaggiRepo.findByUtente(utente);
 
-		return ResponseEntity.ok(models);
+		return ResponseEntity.ok(personaggiUtente);
 	}
 
+	@CrossOrigin
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<Personaggio> createPg(@RequestBody Personaggio model) {
 		if(!findByNominativo(model)) {
