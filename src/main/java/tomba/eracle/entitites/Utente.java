@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.Transient;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -39,5 +41,8 @@ public class Utente {
 	@OneToMany(mappedBy = "utente")
 	@JsonIgnore
 	private List<Personaggio> personaggi;
+	
+	@Transient
+	private int numeroPersonaggi;
 	
 }
