@@ -1,5 +1,6 @@
 package tomba.eracle.entitites;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -36,6 +37,9 @@ public class Utente {
 	
 	@Column(name = "tipo")
 	private String tipo;
+	
+	@Column(name = "data_registrazione")
+	private LocalDate dataRegistrazione;
 	
 	@OneToMany(mappedBy = "utente")
 	@JsonIgnore

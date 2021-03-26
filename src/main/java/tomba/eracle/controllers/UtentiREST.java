@@ -3,6 +3,7 @@ package tomba.eracle.controllers;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class UtentiREST {
 		try {
 			codificaPassword(utente);
 			utente.setTipo("standard");
+			utente.setDataRegistrazione(LocalDate.now());
 			utente = utentiRepo.save(utente);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
