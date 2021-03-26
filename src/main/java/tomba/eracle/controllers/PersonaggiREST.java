@@ -1,5 +1,6 @@
 package tomba.eracle.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,23 @@ public class PersonaggiREST {
 		if(!findByNominativo(model)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 		}
+		model.setDataCreazione(LocalDate.now());
 		model.setChirottero(false);
 		model.setUmbra(false);
 		personaggiRepo.save(model);
 
+		return ResponseEntity.ok(model);
+	}
+	
+	
+	@CrossOrigin
+	@PostMapping(path  = "/modifica", consumes = "application/json" )
+	public ResponseEntity<Personaggio> modificaPersonaggio(@RequestBody Personaggio model) {
+		
+		model.setDataUltimaModifica(LocalDate.now());
+		
+		personaggiRepo.save(model);
+		
 		return ResponseEntity.ok(model);
 	}
 
