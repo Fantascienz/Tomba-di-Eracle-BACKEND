@@ -64,16 +64,15 @@ public class UtentiREST {
 	@PostMapping(path = "/modifica", consumes = "application/json", produces = "application/json")
 	@CrossOrigin(origins = "http://localhost:3000")
 	public ResponseEntity<Utente> modificaUtente(@RequestBody ModificaUtente mod) {
-		System.out.println(mod.getUtente().toString());
-		System.out.println(mod.getVecchiaPsw());
 		try {
 			String password = utentiRepo.findPasswordByUtente(mod.getUtente().getId());
 			if (password.equals(codificaPassword(mod.getVecchiaPsw()))) {
-				mod.getUtente().setPsw(codificaPassword(mod.getUtente().getPsw()));
+				codificaPassword(mod.getUtente());
 				return ResponseEntity.ok(utentiRepo.save(mod.getUtente()));
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 			}
 		} catch (Exception e) {
-			
 		}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 	}
