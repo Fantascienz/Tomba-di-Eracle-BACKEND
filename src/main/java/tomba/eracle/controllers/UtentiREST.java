@@ -43,6 +43,9 @@ public class UtentiREST {
 		try {
 			codificaPassword(utente);
 			utente.setTipo("standard");
+			utente.setMaxUmani(1);
+			utente.setMaxGarou(0);
+			utente.setMaxPng(0);
 			utente.setDataRegistrazione(LocalDate.now());
 			utente = utentiRepo.save(utente);
 		} catch (Exception e) {

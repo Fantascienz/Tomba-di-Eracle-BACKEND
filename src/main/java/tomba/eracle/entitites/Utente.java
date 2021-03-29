@@ -41,6 +41,15 @@ public class Utente {
 	@Column(name = "data_registrazione")
 	private LocalDate dataRegistrazione;
 	
+	@Column(name = "max_umani")
+	private Integer maxUmani;
+	
+	@Column(name = "max_garou")
+	private Integer maxGarou;
+	
+	@Column(name = "max_png")
+	private Integer maxPng;
+	
 	@OneToMany(mappedBy = "utente")
 	@JsonIgnore
 	private List<Personaggio> personaggi;
