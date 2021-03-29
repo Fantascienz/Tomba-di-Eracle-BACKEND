@@ -48,6 +48,7 @@ public class PersonaggiREST {
 		model.setDataCreazione(LocalDate.now());
 		model.setChirottero(false);
 		model.setUmbra(false);
+		model.setTribu("Senza Tribu");
 		personaggiRepo.save(model);
 
 		return ResponseEntity.ok(model);
@@ -57,6 +58,8 @@ public class PersonaggiREST {
 	@CrossOrigin
 	@PostMapping(path  = "/modifica", consumes = "application/json" )
 	public ResponseEntity<Personaggio> modificaPersonaggio(@RequestBody Personaggio model) {
+		
+		System.out.println("MODIFICA");
 		
 		model.setDataUltimaModifica(LocalDate.now());
 		
