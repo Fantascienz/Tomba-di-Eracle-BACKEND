@@ -13,4 +13,6 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	public List<Personaggio> findByUtente(Utente utente);
 	
 	public Personaggio findByNominativo(String nominativo);
+	
+	public List<Personaggio> findByRazza(String razza);
 }

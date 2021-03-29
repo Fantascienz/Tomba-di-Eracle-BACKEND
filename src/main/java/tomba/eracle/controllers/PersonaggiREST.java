@@ -3,11 +3,13 @@ package tomba.eracle.controllers;
 import java.time.LocalDate;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,15 @@ public class PersonaggiREST {
 		personaggiRepo.save(model);
 		
 		return ResponseEntity.ok(model);
+	}
+	
+	@CrossOrigin
+	@GetMapping(path = "/{razza}", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getByRazza(@PathVariable("razza") String razza) {
+		
+		List<Personaggio> models = personaggiRepo.findByRazza(razza);
+		
+		return ResponseEntity.ok(models);
 	}
 
 	private boolean findByNominativo(Personaggio model) {
