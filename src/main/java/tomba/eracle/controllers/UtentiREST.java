@@ -67,7 +67,7 @@ public class UtentiREST {
 	}
 
 	@PostMapping(path = "/modifica", consumes = "application/json", produces = "application/json")
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin
 	public ResponseEntity<Utente> modificaUtente(@RequestBody ModificaUtente mod) {
 		try {
 			String password = utentiRepo.findPasswordByUtente(mod.getUtente().getId());
@@ -80,6 +80,12 @@ public class UtentiREST {
 		} catch (Exception e) {
 		}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+	}
+	
+	@PostMapping(path="/massimali",consumes = "application/json")
+	@CrossOrigin
+	public void modificaMassimaliPg(@RequestBody Utente u) {
+		utentiRepo.save(u);
 	}
 
 	private void codificaPassword(Utente u) {
