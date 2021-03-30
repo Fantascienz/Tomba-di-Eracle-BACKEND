@@ -87,7 +87,18 @@ public class PersonaggiREST {
 		
 		return ResponseEntity.ok(models);
 	}
-
+	
+	@CrossOrigin
+	@GetMapping(path= "/orderNominativo", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllOrderByNominativo() {
+		
+		List<Personaggio> models = personaggiRepo.getAllOrderByNominativo();
+		
+		return ResponseEntity.ok(models);
+		
+	}
+	
+	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());
 		if (model != null) {

@@ -19,4 +19,7 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	@Query(nativeQuery = true, value = "SELECT * FROM  personaggi ORDER BY (razza)")
 	public List<Personaggio> getAllOrderByRazza();
+	
+	@Query(nativeQuery = true, value="SELECT * FROM personaggi ORDER BY (nominativo)")
+	public List<Personaggio> getAllOrderByNominativo();
 }
