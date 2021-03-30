@@ -1,6 +1,9 @@
 package tomba.eracle.entitites;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
+=======
+>>>>>>> 2c8e63b (risolti conflitti)
 import java.util.List;
 
 import javax.persistence.Column;
@@ -38,6 +41,7 @@ public class Utente {
 	@Column(name = "tipo")
 	private String tipo;
 	
+<<<<<<< HEAD
 	@Column(name = "data_registrazione")
 	private LocalDate dataRegistrazione;
 	
@@ -57,4 +61,9 @@ public class Utente {
 	@Transient
 	private int numeroPersonaggi;
 	
+=======
+	@OneToMany(mappedBy = "utente")
+	private List<Personaggio> personaggi;
+	
+>>>>>>> 2c8e63b (risolti conflitti)
 }

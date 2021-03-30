@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +33,14 @@ public class PersonaggiREST {
 	@PostMapping(path = "/user", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> findByUser(@RequestBody Utente utente) {
 
+<<<<<<< HEAD
+=======
+	
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping(path = "/user", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> findByUser(@RequestBody Utente utente) {
+
+>>>>>>> 2c8e63b (risolti conflitti)
 		List<Personaggio> personaggiUtente = personaggiRepo.findByUtente(utente);
 
 		return ResponseEntity.ok(personaggiUtente);
