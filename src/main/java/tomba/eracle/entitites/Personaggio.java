@@ -1,5 +1,7 @@
 package tomba.eracle.entitites;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,6 +64,12 @@ public class Personaggio {
 	
 	@Column(name = "chirottero")
 	private boolean chirottero;
+	
+	@Column(name = "data_creazione")
+	private LocalDate dataCreazione;
+	
+	@Column(name = "data_ultima_modifica")
+	private LocalDate dataUltimaModifica;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_utente")

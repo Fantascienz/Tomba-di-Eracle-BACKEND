@@ -3,6 +3,7 @@ package tomba.eracle.controllers;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,11 @@ public class UtentiREST {
 	@GetMapping(produces = "application/json")
 	@CrossOrigin
 	public List<Utente> getAll() {
-		return (List<Utente>) utentiRepo.findAll();
+		List<Utente> lista = (List<Utente>) utentiRepo.findAll();
+		for (Utente u : lista) {
+			setNumeroPg(u);
+		}
+		return lista;
 	}
 
 	@PostMapping(consumes = "application/json")
@@ -38,6 +43,10 @@ public class UtentiREST {
 		try {
 			codificaPassword(utente);
 			utente.setTipo("standard");
+			utente.setMaxUmani(1);
+			utente.setMaxGarou(0);
+			utente.setMaxPng(0);
+			utente.setDataRegistrazione(LocalDate.now());
 			utente = utentiRepo.save(utente);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -58,20 +67,25 @@ public class UtentiREST {
 	}
 
 	@PostMapping(path = "/modifica", consumes = "application/json", produces = "application/json")
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin
 	public ResponseEntity<Utente> modificaUtente(@RequestBody ModificaUtente mod) {
-		System.out.println(mod.getUtente().toString());
-		System.out.println(mod.getVecchiaPsw());
 		try {
 			String password = utentiRepo.findPasswordByUtente(mod.getUtente().getId());
 			if (password.equals(codificaPassword(mod.getVecchiaPsw()))) {
-				mod.getUtente().setPsw(codificaPassword(mod.getUtente().getPsw()));
+				codificaPassword(mod.getUtente());
 				return ResponseEntity.ok(utentiRepo.save(mod.getUtente()));
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 			}
 		} catch (Exception e) {
-			
 		}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+	}
+	
+	@PostMapping(path="/massimali",consumes = "application/json")
+	@CrossOrigin
+	public void modificaMassimaliPg(@RequestBody Utente u) {
+		utentiRepo.save(u);
 	}
 
 	private void codificaPassword(Utente u) {
@@ -101,6 +115,10 @@ public class UtentiREST {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private void setNumeroPg(Utente u) {
+		u.setNumeroPersonaggi(utentiRepo.findNumeroPgUtente(u.getId()));
 	}
 
 }

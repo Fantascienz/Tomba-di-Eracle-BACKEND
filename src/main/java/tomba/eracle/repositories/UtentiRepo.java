@@ -12,5 +12,8 @@ public interface UtentiRepo extends CrudRepository<Utente, Long>{
 	
 	@Query(value = "SELECT psw FROM utenti WHERE id = :id", nativeQuery = true)
 	public String findPasswordByUtente(@Param("id")Long id);
+	
+	@Query(value = "SELECT COUNT(*) FROM personaggi WHERE id_utente = :id", nativeQuery = true)
+	public int findNumeroPgUtente(@Param("id")Long id);
 
 }
