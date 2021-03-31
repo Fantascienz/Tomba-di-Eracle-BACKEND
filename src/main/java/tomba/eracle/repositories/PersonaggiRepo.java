@@ -39,6 +39,9 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato")
 	public List<Personaggio> getByRazzaAndStato(@Param(value = "razza") String razza, @Param("stato") String stato);
 	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (id)")
+	public List<Personaggio> getAllOrderById();
+	
 	
 	
 }
