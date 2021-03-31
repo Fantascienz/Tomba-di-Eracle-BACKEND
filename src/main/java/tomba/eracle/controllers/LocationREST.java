@@ -2,9 +2,11 @@ package tomba.eracle.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.pojo.CreazioneLocation;
+import tomba.eracle.pojo.Umbra;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 
@@ -40,8 +43,33 @@ public class LocationREST {
 		pojo.getLocation().setTipo("Reame");
 		pojo.getLocation().setMappa("Esterna");
 		Location location = locationRepo.save(pojo.getLocation());
-		Location umbra = generaUmbra(location);
+		Location umbra = generaUmbra(location, pojo.getUmbra());
 		salvaDirezioni(location, umbra, pojo);
+	}
+
+	@DeleteMapping(path = "/delete/{id}", consumes = "application/json")
+	@CrossOrigin
+	public void cancellaLocation(@PathVariable("id") Long id) {
+		// LOCATION DA ELIMINARE
+		Optional<Location> location = locationRepo.findById(id);
+		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(id));
+		if (location.get().getMappa().equalsIgnoreCase("Esterna")) {
+			// DIREZIONI DA ELIMINARE
+			Direzione direzioniLocation = direzioniRepo.findByIdLocation(location.get().getId());
+			Direzione direzioniUmbra = direzioniRepo.findByIdLocation(umbra.get().getId());
+			// DIREZIONI RELATIVE DA AGGIORNARE
+			List<Direzione> direzioniRelativeLocation = direzioniRepo.findDirezioniRelative(location.get().getId());
+			List<Direzione> direzioniRelativeUmbra = direzioniRepo.findDirezioniRelative(umbra.get().getId());
+			// AGGIORNO LE DIREZIONI RELATIVE
+			aggiornaDirezioni(direzioniRelativeLocation, location.get().getId());
+			aggiornaDirezioni(direzioniRelativeUmbra, umbra.get().getId());
+			// ELIMINO LE DIREZIONI
+			direzioniRepo.delete(direzioniLocation);
+			direzioniRepo.delete(direzioniUmbra);
+			// ELIMINO LE LOCATION
+			locationRepo.delete(location.get());
+			locationRepo.delete(umbra.get());
+		}
 
 	}
 
@@ -66,15 +94,15 @@ public class LocationREST {
 		return locations;
 	}
 
-	private Location generaUmbra(Location location/* ,Umbra u */) {
+	private Location generaUmbra(Location location, Umbra u) {
 		Location umbra = new Location();
 		umbra.setNome(location.getNome());
 		umbra.setTipo("Umbra");
 		umbra.setAmbiente(location.getAmbiente());
-//		umbra.setUrlImgGiorno(u.getUrlImgGiorno);
-//		umbra.setUrlImgNotte(u.getUrlImgNotte);
+		umbra.setUrlImgGiorno(u.getUrlImgGiorno());
+		umbra.setUrlImgNotte(u.getUrlImgNotte());
 //		umbra.setUrlMinimappa(u.getUrlImgMinimappa);
-//		umbra.setUrlAudio(u.getUrlAudio);
+		umbra.setUrlAudio(u.getUrlAudio());
 		umbra.setMappa("Esterna");
 		umbra.setCreatore(location.getCreatore());
 		return locationRepo.save(umbra);
@@ -83,12 +111,12 @@ public class LocationREST {
 	private void salvaDirezioni(Location location, Location umbra, CreazioneLocation cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
-		setIngresso(location,dirLocation, cr.getIngresso(), false);
+		setIngresso(location, dirLocation, cr.getIngresso(), false);
 		dirLocation.setIdLocationSpecchio(umbra.getId());
 		direzioniRepo.save(dirLocation);
 		// CREO LA DIREZIONE UMBRA SU LOCATION UMBRA
 		Direzione dirUmbra = generaDirezione(umbra);
-		setIngresso(umbra,dirUmbra, cr.getIngresso(), true);
+		setIngresso(umbra, dirUmbra, cr.getIngresso(), true);
 		dirUmbra.setIdLocationSpecchio(location.getId());
 		direzioniRepo.save(dirUmbra);
 
@@ -100,7 +128,7 @@ public class LocationREST {
 		return dir;
 	}
 
-	private void setIngresso(Location loc,Direzione dir, String ingresso, boolean umbra) {
+	private void setIngresso(Location loc, Direzione dir, String ingresso, boolean umbra) {
 		String direzione = "";
 		String locationInvertita = "";
 		String location = "";
@@ -127,9 +155,9 @@ public class LocationREST {
 		if (umbra) {
 			idLocation = direzioniRepo.findUmbraByLocation(idLocation);
 		}
-		
+
 		Direzione dirMacro = direzioniRepo.findByIdLocation(idLocation);
-		
+
 		switch (direzione) {
 		case "nord":
 			dir.setIdLocationSud(idLocation);
@@ -148,7 +176,25 @@ public class LocationREST {
 			dirMacro.setIdLocationOvest(loc.getId());
 			break;
 		}
-		
+
 		direzioniRepo.save(dirMacro);
+	}
+
+	private void aggiornaDirezioni(List<Direzione> direzioni, Long idLocation) {
+		for (Direzione d : direzioni) {
+			if (d.getIdLocationNord() != null && d.getIdLocationNord().equals(idLocation)) {
+				d.setIdLocationNord(null);
+			}
+			if (d.getIdLocationEst() != null && d.getIdLocationEst().equals(idLocation)) {
+				d.setIdLocationEst(null);
+			}
+			if (d.getIdLocationSud() != null && d.getIdLocationSud().equals(idLocation)) {
+				d.setIdLocationSud(null);
+			}
+			if (d.getIdLocationOvest() != null && d.getIdLocationOvest().equals(idLocation)) {
+				d.setIdLocationOvest(null);
+			}
+			direzioniRepo.save(d);
+		}
 	}
 }
