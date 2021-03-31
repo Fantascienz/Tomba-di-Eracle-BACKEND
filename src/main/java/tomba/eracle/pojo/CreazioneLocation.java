@@ -9,4 +9,6 @@ public class CreazioneLocation {
 	private Location location;
 	
 	private String ingresso;
+	
+	private Umbra umbra;
 }
