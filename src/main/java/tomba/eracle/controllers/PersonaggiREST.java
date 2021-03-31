@@ -122,7 +122,6 @@ public class PersonaggiREST {
 		if (model != null) {
 			return false;
 		}
-		
 		return true;
 	
 	}

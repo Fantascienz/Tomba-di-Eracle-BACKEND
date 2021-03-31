@@ -22,5 +22,5 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	
 	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_ovest IS NULL AND tipo = 'Reame')", nativeQuery = true)
 	List<Location> findByOvestNull();
-
+	
 }
