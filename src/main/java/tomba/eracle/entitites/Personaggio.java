@@ -71,6 +71,9 @@ public class Personaggio {
 	@Column(name = "data_ultima_modifica")
 	private LocalDate dataUltimaModifica;
 	
+	@Column(name = "stato")
+	private String stato;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_utente")
 	private Utente utente;

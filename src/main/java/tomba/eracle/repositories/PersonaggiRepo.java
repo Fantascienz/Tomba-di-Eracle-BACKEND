@@ -17,6 +17,8 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	public List<Personaggio> findByRazza(String razza);
 	
+	public List<Personaggio> findByStato(String stato);
+	
 	@Query(nativeQuery = true, value = "SELECT * FROM  personaggi ORDER BY (razza)")
 	public List<Personaggio> getAllOrderByRazza();
 	
@@ -29,5 +31,10 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (rango)")
 	public List<Personaggio> getAllOrderByRango();
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (data_creazione)")
+	public List<Personaggio> getAllOrderByDataCreazione();
+	
+	
 	
 }

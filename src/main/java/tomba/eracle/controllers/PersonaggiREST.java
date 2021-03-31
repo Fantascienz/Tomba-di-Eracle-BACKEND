@@ -71,10 +71,19 @@ public class PersonaggiREST {
 	}
 	
 	@CrossOrigin
-	@GetMapping(path = "/{razza}", produces = "application/json")
+	@GetMapping(path = "/filtraRazza/{razza}", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> getByRazza(@PathVariable("razza") String razza) {
 		
 		List<Personaggio> models = personaggiRepo.findByRazza(razza);
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@GetMapping(path = "/filtraStato/{stato}", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getByStato(@PathVariable("stato") String stato) {
+		
+		List<Personaggio> models = personaggiRepo.findByStato(stato);
 		
 		return ResponseEntity.ok(models);
 	}
@@ -112,6 +121,15 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllOrderByRango() {
 		
 		List<Personaggio> models = personaggiRepo.getAllOrderByRango();
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@GetMapping(path = "/orderDataCreazione", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllOrderByDataCreazione() {
+		
+		List<Personaggio> models = personaggiRepo.getAllOrderByDataCreazione();
 		
 		return ResponseEntity.ok(models);
 	}
