@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import tomba.eracle.entitites.Location;
 
@@ -23,4 +24,6 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_ovest IS NULL AND tipo = 'Reame')", nativeQuery = true)
 	List<Location> findByOvestNull();
 	
+	@Query(value = "SELECT * FROM locations WHERE mappa = 'Esterna' AND tipo = :tipo", nativeQuery = true)
+	List<Location> findEsterneByTipo(@PathVariable("tipo")String tipo);
 }

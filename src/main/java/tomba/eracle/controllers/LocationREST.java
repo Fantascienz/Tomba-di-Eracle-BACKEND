@@ -36,6 +36,12 @@ public class LocationREST {
 	public List<Location> getAllMacroLocations() {
 		return (List<Location>) locationRepo.findByMappa("Macro");
 	}
+	
+	@GetMapping(path = "/esterne/{tipo}", produces = "application/json")
+	@CrossOrigin
+	public List<Location> getAllLocationsEsterne(@PathVariable String tipo) {
+		return (List<Location>) locationRepo.findEsterneByTipo(tipo);
+	}
 
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin
