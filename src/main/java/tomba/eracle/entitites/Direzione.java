@@ -35,6 +35,6 @@ public class Direzione {
 	private Long idLocationOvest;
 	
 	@Column(name = "id_location_specchio")
-	private Long idLocationUmbra;
+	private Long idLocationSpecchio;
 	
 }

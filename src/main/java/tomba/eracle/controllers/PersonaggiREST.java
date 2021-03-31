@@ -3,7 +3,6 @@ package tomba.eracle.controllers;
 import java.time.LocalDate;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,10 +70,19 @@ public class PersonaggiREST {
 	}
 	
 	@CrossOrigin
-	@GetMapping(path = "/{razza}", produces = "application/json")
+	@GetMapping(path = "/filtraRazza/{razza}", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> getByRazza(@PathVariable("razza") String razza) {
 		
 		List<Personaggio> models = personaggiRepo.findByRazza(razza);
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@GetMapping(path = "/filtraStato/{stato}", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getByStato(@PathVariable("stato") String stato) {
+		
+		List<Personaggio> models = personaggiRepo.findByStato(stato);
 		
 		return ResponseEntity.ok(models);
 	}
@@ -116,13 +124,30 @@ public class PersonaggiREST {
 		return ResponseEntity.ok(models);
 	}
 	
+	@CrossOrigin
+	@GetMapping(path = "/orderDataCreazione", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllOrderByDataCreazione() {
+		
+		List<Personaggio> models = personaggiRepo.getAllOrderByDataCreazione();
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/razzaAndStato", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> findByRazzaAndStato(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getByRazzaAndStato(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
 	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());
 		if (model != null) {
 			return false;
 		}
-		
 		return true;
 	
 	}
