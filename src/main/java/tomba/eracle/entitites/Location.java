@@ -1,5 +1,7 @@
 package tomba.eracle.entitites;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,6 +49,15 @@ public class Location {
 	
 	@Column(name = "chiave")
 	private String chiave;
+	
+	@Column(name = "meteo")
+	private String meteo;
+	
+	@Column(name = "fascia_oraria")
+	private String fasciaOraria;
+	
+	@Column(name = "data")
+	private LocalDate data;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_creatore")

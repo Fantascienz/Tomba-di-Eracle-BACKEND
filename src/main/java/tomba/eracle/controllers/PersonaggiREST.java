@@ -133,6 +133,16 @@ public class PersonaggiREST {
 		return ResponseEntity.ok(models);
 	}
 	
+	
+	@CrossOrigin
+	@GetMapping(path = "/orderId", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllOrderById() {
+		
+		List<Personaggio> models = personaggiRepo.getAllOrderById();
+		
+		return ResponseEntity.ok(models);
+	}
+	
 	@CrossOrigin
 	@PostMapping(path = "/razzaAndStato", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> findByRazzaAndStato(@RequestBody Personaggio model) {
