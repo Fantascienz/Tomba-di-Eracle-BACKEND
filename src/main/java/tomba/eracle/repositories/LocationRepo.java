@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.data.repository.query.Param;
 
 import tomba.eracle.entitites.Location;
 
 public interface LocationRepo extends CrudRepository<Location, Long> {
 
 	List<Location> findByMappa(String mappa);
+	
+	@Query(value = "SELECT mappa FROM locations WHERE id = :id" ,nativeQuery=true)
+	String findMappa(@Param("id")Long id);
 
 	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_nord IS NULL AND tipo = 'Reame')", nativeQuery = true)
 	List<Location> findByNordNull();
@@ -25,5 +28,5 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	List<Location> findByOvestNull();
 	
 	@Query(value = "SELECT * FROM locations WHERE mappa = 'Esterna' AND tipo = :tipo", nativeQuery = true)
-	List<Location> findEsterneByTipo(@PathVariable("tipo")String tipo);
+	List<Location> findEsterneByTipo(@Param("tipo")String tipo);
 }
