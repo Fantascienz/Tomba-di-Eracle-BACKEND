@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,11 +70,23 @@ public class UtentiREST {
 	@PostMapping(path = "/modifica", consumes = "application/json", produces = "application/json")
 	@CrossOrigin
 	public ResponseEntity<Utente> modificaUtente(@RequestBody ModificaUtente mod) {
+		System.out.println(mod.getUtente());
+		System.out.println(mod.getUtente().getPsw());
 		try {
 			String password = utentiRepo.findPasswordByUtente(mod.getUtente().getId());
 			if (password.equals(codificaPassword(mod.getVecchiaPsw()))) {
 				codificaPassword(mod.getUtente());
-				return ResponseEntity.ok(utentiRepo.save(mod.getUtente()));
+				Optional<Utente> utente = utentiRepo.findById(mod.getUtente().getId());
+				if(!mod.getUtente().getNominativo().isBlank()) {
+					utente.get().setNominativo(mod.getUtente().getNominativo());
+				}
+				if (!mod.getUtente().getEmail().isBlank()) {
+					utente.get().setEmail(mod.getUtente().getEmail());
+				}
+				if(!password.equals(codificaPassword(mod.getUtente().getPsw()))) {
+					utente.get().setPsw(mod.getUtente().getPsw());
+				}
+				return ResponseEntity.ok(utentiRepo.save(utente.get()));
 			} else {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 			}
