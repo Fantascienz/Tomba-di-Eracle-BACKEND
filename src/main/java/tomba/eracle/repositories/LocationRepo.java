@@ -12,6 +12,9 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 
 	List<Location> findByMappa(String mappa);
 	
+	@Query(value="SELECT * FROM locations WHERE id IN (SELECT ultima_location FROM personaggi WHERE id = :id)",nativeQuery=true)
+	Location findUltimaLocationPg (@Param("id") Long idPersonaggio);
+	
 	@Query(value = "SELECT mappa FROM locations WHERE id = :id" ,nativeQuery=true)
 	String findMappa(@Param("id")Long id);
 
