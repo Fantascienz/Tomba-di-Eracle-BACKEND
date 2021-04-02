@@ -44,12 +44,6 @@ public class LocationREST {
 	public List<Location> getAllLocationsEsterne(@PathVariable String tipo) {
 		return (List<Location>) locationRepo.findEsterneByTipo(tipo);
 	}
-	
-	@GetMapping(path = "/ultima/{id}", produces = "application/json")
-	@CrossOrigin
-	public Location ultimaLocation (@PathVariable("id") Long id) {
-		return locationRepo.findUltimaLocationPg(id);
-	}
 
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin

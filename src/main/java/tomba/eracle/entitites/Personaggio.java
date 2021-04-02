@@ -71,6 +71,9 @@ public class Personaggio {
 	@Column(name = "data_ultima_modifica")
 	private LocalDate dataUltimaModifica;
 	
+	@Column(name = "ultima_location")
+	private Long ultimaLocation;
+	
 	@Column(name = "stato")
 	private String stato;
 	
