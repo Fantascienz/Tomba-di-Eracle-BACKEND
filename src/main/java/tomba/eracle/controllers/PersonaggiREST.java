@@ -161,6 +161,16 @@ public class PersonaggiREST {
 		return ResponseEntity.ok(models);
 	}
 	
+	@CrossOrigin
+	@GetMapping(path ="/getAllRazze", produces = "application/json")
+	public ResponseEntity<List<String>> getAllRazzeGroupBy() {
+		
+		List<String> models = personaggiRepo.getAllRazzeGroupBy();
+		
+		return ResponseEntity.ok(models);
+		
+	}
+	
 	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());
