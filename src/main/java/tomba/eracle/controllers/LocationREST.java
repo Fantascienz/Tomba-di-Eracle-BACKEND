@@ -77,8 +77,15 @@ public class LocationREST {
 		stanza.setSubLocation(pojo.getLocation());
 		locationRepo.save(pojo.getLocation());
 		stanzeRepo.save(stanza);
+		//gestire tipo stanza umbra 
 		umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
 		locationRepo.save(umbra);
+	}
+	
+	@GetMapping(path = "/stanze",produces = "application/json")
+	@CrossOrigin
+	public List<Stanza> getAllStanze() {
+		return (List<Stanza>) stanzeRepo.findAll();
 	}
 
 	@PostMapping(path = "/update", consumes = "application/json")
