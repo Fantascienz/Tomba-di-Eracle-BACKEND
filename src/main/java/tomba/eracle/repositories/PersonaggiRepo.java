@@ -43,5 +43,7 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	public List<Personaggio> getAllOrderById();
 	
 	
+	@Query(nativeQuery = true, value = "SELECT COUNT(razza) FROM personaggi WHERE razza = :razza")
+	public int countRazza(@Param("razza") String razza);
 	
 }

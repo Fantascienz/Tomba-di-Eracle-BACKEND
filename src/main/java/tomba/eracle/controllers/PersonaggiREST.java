@@ -46,6 +46,13 @@ public class PersonaggiREST {
 		if(!findByNominativo(model)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 		}
+		
+		if(model.getRazza() != "Umano" || model.getRazza() != "Lupo" || model.getRazza() != "Meticcio") {
+			if(countRazza(model.getRazza())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+			}
+		}
+		
 		model.setDataCreazione(LocalDate.now());
 		if(model.getNomeGarou() != null) {
 			model.setChirottero(false);
@@ -162,6 +169,14 @@ public class PersonaggiREST {
 		}
 		return true;
 	
+	}
+	
+	private boolean countRazza(String razza) {
+		
+		if(personaggiRepo.countRazza(razza) >= 1) {
+			return true;
+		}
+		return false;
 	}
 
 }
