@@ -33,6 +33,12 @@ public class LocationREST {
 	@Autowired
 	private LocationService locationService;
 
+	@GetMapping(produces = "application/json")
+	@CrossOrigin
+	public List<Location> getAllLocations() {
+		return (List<Location>) locationRepo.findAll();
+	}
+	
 	@GetMapping(path = "/macro", produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllMacroLocations() {

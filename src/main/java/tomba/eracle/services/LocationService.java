@@ -79,12 +79,12 @@ public class LocationService {
 	public void salvaDirezioni(Location location, Location umbra, CreazioneLocation cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
-		setIngresso(location, dirLocation, cr.getIngresso(), false);
+		setIngresso(location, dirLocation, cr.getDirezioneIngresso(),cr.getIdLocationIngresso(), false);
 		dirLocation.setIdLocationSpecchio(umbra.getId());
 		direzioniRepo.save(dirLocation);
 		// CREO LA DIREZIONE UMBRA SU LOCATION UMBRA
 		Direzione dirUmbra = generaDirezione(umbra);
-		setIngresso(umbra, dirUmbra, cr.getIngresso(), true);
+		setIngresso(umbra, dirUmbra, cr.getDirezioneIngresso(),cr.getIdLocationIngresso(), true);
 		dirUmbra.setIdLocationSpecchio(location.getId());
 		direzioniRepo.save(dirUmbra);
 
@@ -96,30 +96,7 @@ public class LocationService {
 		return dir;
 	}
 
-	private void setIngresso(Location loc, Direzione dir, String ingresso, boolean umbra) {
-		String direzione = "";
-		String locationInvertita = "";
-		String location = "";
-		long idLocation = 0;
-		for (int i = 0; i < ingresso.length(); i++) {
-			if (ingresso.charAt(i) != 32) {
-				direzione += ingresso.charAt(i);
-			} else {
-				break;
-			}
-		}
-		for (int i = ingresso.length() - 1; i >= 0; i--) {
-			if (ingresso.charAt(i) != 32) {
-				locationInvertita += ingresso.charAt(i);
-			} else {
-				for (int k = locationInvertita.length() - 1; k >= 0; k--) {
-					location += locationInvertita.charAt(k);
-				}
-				idLocation = Long.parseLong(location);
-				break;
-			}
-		}
-
+	private void setIngresso(Location loc, Direzione dir, String direzione, Long idLocation, boolean umbra) {
 		if (umbra) {
 			idLocation = direzioniRepo.findUmbraByLocation(idLocation);
 		}

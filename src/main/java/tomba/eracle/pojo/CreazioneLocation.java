@@ -10,5 +10,9 @@ public class CreazioneLocation {
 	
 	private String ingresso;
 	
+	private Long idLocationIngresso;
+	
+	private String direzioneIngresso;
+	
 	private Umbra umbra;
 }
