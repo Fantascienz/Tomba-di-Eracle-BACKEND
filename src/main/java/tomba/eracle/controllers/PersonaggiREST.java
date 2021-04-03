@@ -47,8 +47,11 @@ public class PersonaggiREST {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 		}
 		model.setDataCreazione(LocalDate.now());
-		model.setChirottero(false);
-		model.setUmbra(false);
+		if(model.getNomeGarou() != null) {
+			model.setChirottero(false);
+			model.setUmbra(false);
+		}
+		
 		model.setTribu("Senza Tribu");
 		model.setUltimaLocation((long) 68);
 		personaggiRepo.save(model);
