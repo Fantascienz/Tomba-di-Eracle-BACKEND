@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tomba.eracle.entitites.Location;
+import tomba.eracle.entitites.Stanza;
 import tomba.eracle.pojo.CreazioneLocation;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
+import tomba.eracle.repositories.StanzeRepo;
 import tomba.eracle.services.LocationService;
 
 @RestController
@@ -29,7 +31,10 @@ public class LocationREST {
 
 	@Autowired
 	private DirezioniRepo direzioniRepo;
-	
+
+	@Autowired
+	private StanzeRepo stanzeRepo;
+
 	@Autowired
 	private LocationService locationService;
 
@@ -38,7 +43,7 @@ public class LocationREST {
 	public List<Location> getAllLocations() {
 		return (List<Location>) locationRepo.findAll();
 	}
-	
+
 	@GetMapping(path = "/macro", produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllMacroLocations() {
@@ -59,6 +64,28 @@ public class LocationREST {
 		Location location = locationRepo.save(pojo.getLocation());
 		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
 		locationService.salvaDirezioni(location, umbra, pojo);
+
+	}
+
+	@PostMapping(path = "/stanze",consumes = "application/json")
+	@CrossOrigin
+	public void creaStanza(@RequestBody CreazioneLocation pojo, Stanza stanza, Location superLocation, Location umbra) {
+		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
+		pojo.getLocation().setMappa(mappa);
+		superLocation.setId(pojo.getSuperLocation());
+		stanza.setLocation(superLocation);
+		stanza.setSubLocation(pojo.getLocation());
+		locationRepo.save(pojo.getLocation());
+		stanzeRepo.save(stanza);
+		//gestire tipo stanza umbra 
+		umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
+		locationRepo.save(umbra);
+	}
+	
+	@GetMapping(path = "/stanze",produces = "application/json")
+	@CrossOrigin
+	public List<Stanza> getAllStanze() {
+		return (List<Stanza>) stanzeRepo.findAll();
 	}
 
 	@PostMapping(path = "/update", consumes = "application/json")
@@ -76,7 +103,7 @@ public class LocationREST {
 		Optional<Location> location = locationRepo.findById(id);
 		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(id));
 		if (location.get().getMappa().equalsIgnoreCase("Esterna")) {
-			locationService.cancellaLocation(location.get(),umbra.get());
+			locationService.cancellaLocation(location.get(), umbra.get());
 		}
 
 	}
