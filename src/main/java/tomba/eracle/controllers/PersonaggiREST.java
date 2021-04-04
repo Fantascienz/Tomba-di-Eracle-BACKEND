@@ -46,9 +46,19 @@ public class PersonaggiREST {
 		if(!findByNominativo(model)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 		}
+		
+		if(model.getRazza() != "Umano" || model.getRazza() != "Lupo" || model.getRazza() != "Meticcio") {
+			if(countRazza(model.getRazza())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+			}
+		}
+		
 		model.setDataCreazione(LocalDate.now());
-		model.setChirottero(false);
-		model.setUmbra(false);
+		if(model.getNomeGarou() != null) {
+			model.setChirottero(false);
+			model.setUmbra(false);
+		}
+		
 		model.setTribu("Senza Tribu");
 		model.setUltimaLocation((long) 68);
 		personaggiRepo.save(model);
@@ -151,6 +161,16 @@ public class PersonaggiREST {
 		return ResponseEntity.ok(models);
 	}
 	
+	@CrossOrigin
+	@GetMapping(path ="/getAllRazze", produces = "application/json")
+	public ResponseEntity<List<String>> getAllRazzeGroupBy() {
+		
+		List<String> models = personaggiRepo.getAllRazzeGroupBy();
+		
+		return ResponseEntity.ok(models);
+		
+	}
+	
 	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());
@@ -159,6 +179,14 @@ public class PersonaggiREST {
 		}
 		return true;
 	
+	}
+	
+	private boolean countRazza(String razza) {
+		
+		if(personaggiRepo.countRazza(razza) >= 1) {
+			return true;
+		}
+		return false;
 	}
 
 }
