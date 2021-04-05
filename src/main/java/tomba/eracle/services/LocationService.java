@@ -76,7 +76,7 @@ public class LocationService {
 		locationRepo.save(location);
 	}
 
-	public void salvaDirezioni(Location location, Location umbra, CreazioneLocation cr) {
+	public void salvaDirezioniIngresso(Location location, Location umbra, CreazioneLocation cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
 		setIngresso(location, dirLocation, cr.getDirezioneIngresso(),cr.getIdLocationIngresso(), false);
@@ -87,7 +87,19 @@ public class LocationService {
 		setIngresso(umbra, dirUmbra, cr.getDirezioneIngresso(),cr.getIdLocationIngresso(), true);
 		dirUmbra.setIdLocationSpecchio(location.getId());
 		direzioniRepo.save(dirUmbra);
-
+	}
+	
+	public void salvaDirezioniUscita(Location location, Location umbra, CreazioneLocation cr) {
+		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
+		Direzione dirLocation = generaDirezione(location);
+		setUscita(dirLocation,cr.getDirezioneUscita(),cr.getSuperLocation(),false);
+		dirLocation.setIdLocationSpecchio(umbra.getId());
+		direzioniRepo.save(dirLocation);
+		// CREO LA DIREZIONE UMBRA SU LOCATION UMBRA
+		Direzione dirUmbra = generaDirezione(umbra);
+		setUscita(dirUmbra,cr.getDirezioneUscita(),cr.getSuperLocation(),true);
+		dirUmbra.setIdLocationSpecchio(location.getId());
+		direzioniRepo.save(dirUmbra);
 	}
 
 	private Direzione generaDirezione(Location location) {
@@ -125,6 +137,26 @@ public class LocationService {
 		direzioniRepo.save(dirMacro);
 	}
 	
+	private void setUscita (Direzione dirLocation,String direzione,Long superLocation, boolean umbra) {
+		if (umbra) {
+			superLocation = direzioniRepo.findUmbraByLocation(superLocation);
+		}
+		switch (direzione) {
+		case "nord":
+			dirLocation.setIdLocationNord(superLocation);
+			break;
+		case "est":
+			dirLocation.setIdLocationEst(superLocation);
+			break;
+		case "sud":
+			dirLocation.setIdLocationSud(superLocation);
+			break;
+		case "ovest":
+			dirLocation.setIdLocationOvest(superLocation);
+			break;
+		}
+	}
+	
 	public void aggiornaDirezioni(List<Direzione> direzioni, Long idLocation) {
 		for (Direzione d : direzioni) {
 			if (d.getIdLocationNord() != null && d.getIdLocationNord().equals(idLocation)) {
@@ -152,7 +184,7 @@ public class LocationService {
 		umbra.setUrlImgNotte(u.getUrlImgNotte());
 //		umbra.setUrlMinimappa(u.getUrlImgMinimappa);
 		umbra.setUrlAudio(u.getUrlAudio());
-		umbra.setMappa("Esterna");
+		umbra.setMappa(location.getMappa());
 		umbra.setCreatore(location.getCreatore());
 		return locationRepo.save(umbra);
 	}

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
 import tomba.eracle.pojo.CreazioneLocation;
@@ -63,26 +64,30 @@ public class LocationREST {
 		pojo.getLocation().setMappa("Esterna");
 		Location location = locationRepo.save(pojo.getLocation());
 		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
-		locationService.salvaDirezioni(location, umbra, pojo);
+		locationService.salvaDirezioniIngresso(location, umbra, pojo);
 
 	}
 
-	@PostMapping(path = "/stanze",consumes = "application/json")
+	@PostMapping(path = "/stanze", consumes = "application/json")
 	@CrossOrigin
-	public void creaStanza(@RequestBody CreazioneLocation pojo, Stanza stanza, Location superLocation, Location umbra) {
+	public void creaStanza(@RequestBody CreazioneLocation pojo, Stanza stanza, Location superLocation, Location umbra,
+			Direzione direzione) {
 		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
 		pojo.getLocation().setMappa(mappa);
 		superLocation.setId(pojo.getSuperLocation());
 		stanza.setLocation(superLocation);
 		stanza.setSubLocation(pojo.getLocation());
-		locationRepo.save(pojo.getLocation());
-		stanzeRepo.save(stanza);
-		//gestire tipo stanza umbra 
+
+		Location location = locationRepo.save(pojo.getLocation());
+		// gestire tipo stanza umbra
 		umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
 		locationRepo.save(umbra);
+		stanzeRepo.save(stanza);
+		locationService.salvaDirezioniUscita(location, umbra, pojo);
+
 	}
-	
-	@GetMapping(path = "/stanze",produces = "application/json")
+
+	@GetMapping(path = "/stanze", produces = "application/json")
 	@CrossOrigin
 	public List<Stanza> getAllStanze() {
 		return (List<Stanza>) stanzeRepo.findAll();

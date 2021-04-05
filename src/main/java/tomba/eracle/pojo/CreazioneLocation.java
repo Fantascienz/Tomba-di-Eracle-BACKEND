@@ -14,6 +14,8 @@ public class CreazioneLocation {
 	
 	private String direzioneIngresso;
 	
+	private String direzioneUscita;
+	
 	private Umbra umbra;
 	
 	private Long superLocation;
