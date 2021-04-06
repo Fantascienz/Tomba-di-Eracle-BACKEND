@@ -178,7 +178,11 @@ public class LocationService {
 	public Location generaUmbra(Location location, Umbra u) {
 		Location umbra = new Location();
 		umbra.setNome(location.getNome());
-		umbra.setTipo("Umbra");
+		if (location.getTipo().equalsIgnoreCase("Stanza")) {
+			umbra.setTipo("Stanza Umbra");
+		} else {
+			umbra.setTipo("Umbra");
+		}
 		umbra.setAmbiente(location.getAmbiente());
 		umbra.setUrlImgGiorno(u.getUrlImgGiorno());
 		umbra.setUrlImgNotte(u.getUrlImgNotte());

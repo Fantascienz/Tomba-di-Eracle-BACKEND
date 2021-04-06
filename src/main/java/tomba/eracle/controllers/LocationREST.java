@@ -70,19 +70,24 @@ public class LocationREST {
 
 	@PostMapping(path = "/stanze", consumes = "application/json")
 	@CrossOrigin
-	public void creaStanza(@RequestBody CreazioneLocation pojo, Stanza stanza, Location superLocation, Location umbra,
+	public void creaStanza(@RequestBody CreazioneLocation pojo, Location superLocation, Location umbra,
 			Direzione direzione) {
 		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
 		pojo.getLocation().setMappa(mappa);
 		superLocation.setId(pojo.getSuperLocation());
-		stanza.setLocation(superLocation);
-		stanza.setSubLocation(pojo.getLocation());
-
 		Location location = locationRepo.save(pojo.getLocation());
 		// gestire tipo stanza umbra
 		umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
-		locationRepo.save(umbra);
+		umbra = locationRepo.save(umbra);
+		// STANZE
+		Stanza stanza = new Stanza();
+		stanza.setLocation(superLocation);
+		stanza.setSubLocation(location);
+		Stanza stanzaUmbra = new Stanza();
+		stanzaUmbra.setLocation(locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.getId())).get());
+		stanzaUmbra.setSubLocation(umbra);
 		stanzeRepo.save(stanza);
+		stanzeRepo.save(stanzaUmbra);
 		locationService.salvaDirezioniUscita(location, umbra, pojo);
 
 	}
