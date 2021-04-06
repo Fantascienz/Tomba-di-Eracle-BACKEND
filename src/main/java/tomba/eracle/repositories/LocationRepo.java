@@ -9,8 +9,8 @@ import org.springframework.data.repository.query.Param;
 import tomba.eracle.entitites.Location;
 
 public interface LocationRepo extends CrudRepository<Location, Long> {
-
-	List<Location> findByMappa(String mappa);
+	@Query(value="SELECT * FROM locations WHERE mappa = :mappa AND (tipo = 'Umbra' OR tipo = 'Reame')",nativeQuery=true)
+	List<Location> findByMappa(@Param("mappa")String mappa);
 	
 	@Query(value="SELECT * FROM locations WHERE id IN (SELECT ultima_location FROM personaggi WHERE id = :id)",nativeQuery=true)
 	Location findUltimaLocationPg (@Param("id") Long idPersonaggio);
