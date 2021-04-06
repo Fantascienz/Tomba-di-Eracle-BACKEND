@@ -28,6 +28,7 @@ public class LocationService {
 	private StanzeRepo stanzeRepo;
 
 	public void cancellaLocation(Location location, Location umbra) {
+		System.out.println("CANCELLA SERVICE");
 		// LOCATION STANZE DA ELIMINARE
 		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
 		List<Location> stanzeUmbra = locationRepo.findStanzeByLocation(umbra.getId());

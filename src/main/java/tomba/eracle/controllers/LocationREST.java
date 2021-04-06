@@ -108,10 +108,11 @@ public class LocationREST {
 	@DeleteMapping(path = "/delete/{id}")
 	@CrossOrigin
 	public void cancellaLocation(@PathVariable("id") Long id) {
+		System.out.println("CANCELLA LOCATIONS");
 		// LOCATION DA ELIMINARE
 		Optional<Location> location = locationRepo.findById(id);
 		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(id));
-		if (location.get().getMappa().equalsIgnoreCase("Esterna")) {
+		if (location.get().getMappa().equalsIgnoreCase("Esterna") || location.get().getTipo().equalsIgnoreCase("Stanza")) {
 			locationService.cancellaLocation(location.get(), umbra.get());
 		}
 
