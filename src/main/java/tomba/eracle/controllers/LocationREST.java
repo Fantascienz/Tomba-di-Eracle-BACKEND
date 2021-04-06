@@ -108,7 +108,6 @@ public class LocationREST {
 	@DeleteMapping(path = "/delete/{id}")
 	@CrossOrigin
 	public void cancellaLocation(@PathVariable("id") Long id) {
-		System.out.println("cancella");
 		// LOCATION DA ELIMINARE
 		Optional<Location> location = locationRepo.findById(id);
 		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(id));
