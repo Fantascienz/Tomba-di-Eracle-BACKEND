@@ -70,20 +70,34 @@ public class LocationREST {
 
 	@PostMapping(path = "/stanze", consumes = "application/json")
 	@CrossOrigin
-	public void creaStanza(@RequestBody CreazioneLocation pojo, Stanza stanza, Location superLocation, Location umbra,
-			Direzione direzione) {
+	public void creaStanza(@RequestBody CreazioneLocation pojo, Optional<Location> superLocation, Direzione direzione) {
 		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
 		pojo.getLocation().setMappa(mappa);
-		superLocation.setId(pojo.getSuperLocation());
-		stanza.setLocation(superLocation);
-		stanza.setSubLocation(pojo.getLocation());
-
+		superLocation = locationRepo.findById(pojo.getSuperLocation());
 		Location location = locationRepo.save(pojo.getLocation());
-		// gestire tipo stanza umbra
-		umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
-		locationRepo.save(umbra);
+		System.out.println(superLocation.get().getTipo());
+		// STANZE
+		Stanza stanza = new Stanza();
+		stanza.setLocation(superLocation.get());
+		stanza.setSubLocation(location);
 		stanzeRepo.save(stanza);
-		locationService.salvaDirezioniUscita(location, umbra, pojo);
+		// gestire tipo stanza umbra
+		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
+				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
+			System.out.println("CIAO FACCIO UNA STANZA UMBRA");
+			Location umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
+			System.out.println(umbra);
+			umbra = locationRepo.save(umbra);
+			Stanza stanzaUmbra = new Stanza();
+			stanzaUmbra.setLocation(
+					locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId())).get());
+			stanzaUmbra.setSubLocation(umbra);
+			stanzeRepo.save(stanzaUmbra);
+			locationService.salvaDirezioniUscita(location, umbra, pojo);
+		} else {
+			location.setTipo("Stanza Umbra");
+			locationService.salvaDirezioniUscita(location, null, pojo);
+		}
 
 	}
 
@@ -103,12 +117,21 @@ public class LocationREST {
 	@DeleteMapping(path = "/delete/{id}")
 	@CrossOrigin
 	public void cancellaLocation(@PathVariable("id") Long id) {
-		System.out.println("cancella");
+		System.out.println("CANCELLA LOCATIONS");
 		// LOCATION DA ELIMINARE
 		Optional<Location> location = locationRepo.findById(id);
-		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(id));
-		if (location.get().getMappa().equalsIgnoreCase("Esterna")) {
-			locationService.cancellaLocation(location.get(), umbra.get());
+		Long idUmbra = direzioniRepo.findUmbraByLocation(id);
+		if (idUmbra != null) {
+			Optional<Location> umbra = locationRepo.findById(idUmbra);
+			if (location.get().getMappa().equalsIgnoreCase("Esterna")
+					|| location.get().getTipo().equalsIgnoreCase("Stanza")) {
+				locationService.cancellaLocation(location.get(), umbra.get());
+			}
+		} else {
+			if (location.get().getMappa().equalsIgnoreCase("Esterna")
+					|| location.get().getTipo().equalsIgnoreCase("Stanza") || location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
+				locationService.cancellaLocation(location.get());
+			}
 		}
 
 	}
