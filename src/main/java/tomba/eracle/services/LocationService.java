@@ -28,7 +28,6 @@ public class LocationService {
 	private StanzeRepo stanzeRepo;
 
 	public void cancellaLocation(Location location, Location umbra) {
-		System.out.println("CANCELLA SERVICE");
 		// LOCATION STANZE DA ELIMINARE
 		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
 		List<Location> stanzeUmbra = locationRepo.findStanzeByLocation(umbra.getId());
@@ -58,6 +57,30 @@ public class LocationService {
 		// ELIMINO LE LOCATION
 		locationRepo.delete(location);
 		locationRepo.delete(umbra);
+	}
+
+	public void cancellaLocation(Location location) {
+		// LOCATION STANZE DA ELIMINARE
+		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
+		eliminaStanze(stanze, null);
+		// DIREZIONI DA ELIMINARE
+		Direzione direzioniLocation = direzioniRepo.findByIdLocation(location.getId());
+		// STANZE DA ELIMINARE
+		Stanza stanza = stanzeRepo.findStanzaBySubLocation(location.getId());
+		// DIREZIONI RELATIVE DA AGGIORNARE
+		List<Direzione> direzioniRelativeLocation = direzioniRepo.findDirezioniRelative(location.getId());
+		// AGGIORNO LE DIREZIONI RELATIVE
+		aggiornaDirezioni(direzioniRelativeLocation, location.getId());
+		// ELIMINO LE STANZE
+		if (stanza != null) {
+			stanzeRepo.delete(stanza);
+		}
+		// ELIMINO LE DIREZIONI
+		if (direzioniLocation != null) {
+			direzioniRepo.delete(direzioniLocation);
+		}
+		// ELIMINO LE LOCATION
+		locationRepo.delete(location);
 	}
 
 	public void modificaLocation(Location location, Location mod) {
@@ -113,13 +136,17 @@ public class LocationService {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
 		setUscita(dirLocation, cr.getDirezioneUscita(), cr.getSuperLocation(), false);
-		dirLocation.setIdLocationSpecchio(umbra.getId());
+		if (umbra != null) {
+			dirLocation.setIdLocationSpecchio(umbra.getId());
+		}
 		direzioniRepo.save(dirLocation);
 		// CREO LA DIREZIONE UMBRA SU LOCATION UMBRA
-		Direzione dirUmbra = generaDirezione(umbra);
-		setUscita(dirUmbra, cr.getDirezioneUscita(), cr.getSuperLocation(), true);
-		dirUmbra.setIdLocationSpecchio(location.getId());
-		direzioniRepo.save(dirUmbra);
+		if (umbra != null) {
+			Direzione dirUmbra = generaDirezione(umbra);
+			setUscita(dirUmbra, cr.getDirezioneUscita(), cr.getSuperLocation(), true);
+			dirUmbra.setIdLocationSpecchio(location.getId());
+			direzioniRepo.save(dirUmbra);
+		}
 	}
 
 	private Direzione generaDirezione(Location location) {
@@ -214,11 +241,19 @@ public class LocationService {
 	}
 
 	private void eliminaStanze(List<Location> stanze, List<Location> stanzeUmbra) {
-		if ((stanze.size() == stanzeUmbra.size()) && (stanze != null && stanzeUmbra != null) && stanze.size() != 0) {
+		if (stanzeUmbra != null) {
+			if ((stanze.size() == stanzeUmbra.size()) && (stanze != null && stanzeUmbra != null)
+					&& stanze.size() != 0) {
+				for (int i = 0; i < stanze.size(); i++) {
+					Location location = stanze.get(i);
+					Location umbra = stanzeUmbra.get(i);
+					cancellaLocation(location, umbra);
+				}
+			}
+		} else {
 			for (int i = 0; i < stanze.size(); i++) {
 				Location location = stanze.get(i);
-				Location umbra = stanzeUmbra.get(i);
-				cancellaLocation(location, umbra);
+				cancellaLocation(location);
 			}
 		}
 	}
