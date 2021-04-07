@@ -36,7 +36,7 @@ public class PersonaggiREST {
 <<<<<<< HEAD
 =======
 	
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin
 	@PostMapping(path = "/user", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> findByUser(@RequestBody Utente utente) {
 
