@@ -1,6 +1,5 @@
 package tomba.eracle.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,22 +42,6 @@ public class LocationREST {
 	@CrossOrigin
 	public List<Location> getAllLocations() {
 		List<Location> lista = (List<Location>) locationRepo.findAll();
-		locationService.setDirezioni(lista);
-		return lista;
-	}
-
-	@GetMapping(path = "/macro", produces = "application/json")
-	@CrossOrigin
-	public List<Location> getAllMacroLocations() {
-		List<Location> lista = (List<Location>) locationRepo.findByMappa("Macro");
-		locationService.setDirezioni(lista);
-		return lista;
-	}
-
-	@GetMapping(path = "/esterne/{tipo}", produces = "application/json")
-	@CrossOrigin
-	public List<Location> getAllLocationsEsterne(@PathVariable String tipo) {
-		List<Location> lista = (List<Location>) locationRepo.findEsterneByTipo(tipo);
 		locationService.setDirezioni(lista);
 		return lista;
 	}
@@ -141,27 +124,6 @@ public class LocationREST {
 			}
 		}
 
-	}
-
-	@GetMapping("/{direzioneLibera}")
-	@CrossOrigin
-	public List<Location> getLocationByDirezioneNull(@PathVariable("direzioneLibera") String direzioneLibera) {
-		List<Location> locations = new ArrayList<Location>();
-		switch (direzioneLibera) {
-		case "nord":
-			locations = locationRepo.findByNordNull();
-			break;
-		case "est":
-			locations = locationRepo.findByEstNull();
-			break;
-		case "sud":
-			locations = locationRepo.findBySudNull();
-			break;
-		case "ovest":
-			locations = locationRepo.findByOvestNull();
-			break;
-		}
-		return locations;
 	}
 
 	@GetMapping(path = "/mappa/{id}", produces = "text/plain")
