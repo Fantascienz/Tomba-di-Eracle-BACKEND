@@ -42,19 +42,25 @@ public class LocationREST {
 	@GetMapping(produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllLocations() {
-		return (List<Location>) locationRepo.findAll();
+		List<Location> lista = (List<Location>) locationRepo.findAll();
+		locationService.setDirezioni(lista);
+		return lista;
 	}
 
 	@GetMapping(path = "/macro", produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllMacroLocations() {
-		return (List<Location>) locationRepo.findByMappa("Macro");
+		List<Location> lista = (List<Location>) locationRepo.findByMappa("Macro");
+		locationService.setDirezioni(lista);
+		return lista;
 	}
 
 	@GetMapping(path = "/esterne/{tipo}", produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllLocationsEsterne(@PathVariable String tipo) {
-		return (List<Location>) locationRepo.findEsterneByTipo(tipo);
+		List<Location> lista = (List<Location>) locationRepo.findEsterneByTipo(tipo);
+		locationService.setDirezioni(lista);
+		return lista;
 	}
 
 	@PostMapping(consumes = "application/json")
@@ -129,7 +135,8 @@ public class LocationREST {
 			}
 		} else {
 			if (location.get().getMappa().equalsIgnoreCase("Esterna")
-					|| location.get().getTipo().equalsIgnoreCase("Stanza") || location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
+					|| location.get().getTipo().equalsIgnoreCase("Stanza")
+					|| location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
 				locationService.cancellaLocation(location.get());
 			}
 		}
