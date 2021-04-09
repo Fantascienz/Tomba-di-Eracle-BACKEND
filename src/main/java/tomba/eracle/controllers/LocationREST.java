@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
-import tomba.eracle.pojo.CreazioneLocation;
+import tomba.eracle.pojo.LocationPOJO;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 import tomba.eracle.repositories.StanzeRepo;
@@ -48,7 +48,7 @@ public class LocationREST {
 
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin
-	public void creaLocation(@RequestBody CreazioneLocation pojo) {
+	public void creaLocation(@RequestBody LocationPOJO pojo) {
 		pojo.getLocation().setTipo("Reame");
 		pojo.getLocation().setMappa("Esterna");
 		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
@@ -60,7 +60,7 @@ public class LocationREST {
 
 	@PostMapping(path = "/stanze", consumes = "application/json")
 	@CrossOrigin
-	public void creaStanza(@RequestBody CreazioneLocation pojo, Optional<Location> superLocation, Direzione direzione) {
+	public void creaStanza(@RequestBody LocationPOJO pojo, Optional<Location> superLocation, Direzione direzione) {
 		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
 		pojo.getLocation().setMappa(mappa);
 		superLocation = locationRepo.findById(pojo.getSuperLocation());
@@ -99,9 +99,11 @@ public class LocationREST {
 
 	@PostMapping(path = "/update", consumes = "application/json")
 	@CrossOrigin
-	public void modificaLocation(@RequestBody Location mod) {
-		Optional<Location> location = locationRepo.findById(mod.getId());
-		locationService.modificaLocation(location.get(), mod);
+	public void modificaLocation(@RequestBody LocationPOJO pojo) {
+//		Optional<Location> location = locationRepo.findById(mod.getId());
+		Optional<Location> location = locationRepo.findById(pojo.getLocation().getId());
+		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
+		locationService.modificaLocation(location.get(), pojo.getLocation());
 	}
 
 	@DeleteMapping(path = "/delete/{id}")

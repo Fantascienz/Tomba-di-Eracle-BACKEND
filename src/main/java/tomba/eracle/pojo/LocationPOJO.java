@@ -4,7 +4,7 @@ import lombok.Data;
 import tomba.eracle.entitites.Location;
 
 @Data
-public class CreazioneLocation {
+public class LocationPOJO {
 
 	private Location location;
 	

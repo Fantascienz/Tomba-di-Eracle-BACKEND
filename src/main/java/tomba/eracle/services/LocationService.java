@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
-import tomba.eracle.pojo.CreazioneLocation;
+import tomba.eracle.pojo.LocationPOJO;
 import tomba.eracle.pojo.Umbra;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
@@ -99,11 +99,6 @@ public class LocationService {
 		} else if (!mod.getFasciaOraria().isBlank()) {
 			location.setFasciaOraria(mod.getFasciaOraria());
 		}
-//		if (mod.getMeteo().equalsIgnoreCase("ripristina reale")) {
-//			location.setMeteo(null);
-//		} else if (!mod.getMeteo().isBlank()) {
-//			location.setMeteo(mod.getMeteo());
-//		}
 		if (!mod.getChiave().isBlank()) {
 			location.setChiave(mod.getChiave());
 		}
@@ -119,11 +114,17 @@ public class LocationService {
 		if (!mod.getUrlAudio().isBlank()) {
 			location.setUrlAudio(mod.getUrlAudio());
 		}
+		if (mod.getMeteoGiorno() != null) {
+			location.setMeteoGiorno(mod.getMeteoGiorno());
+		}
+		if (mod.getMeteoNotte() != null) {
+			location.setMeteoNotte(mod.getMeteoNotte());
+		}
 		location.setData(mod.getData());
 		locationRepo.save(location);
 	}
 
-	public void salvaDirezioniIngresso(Location location, Location umbra, CreazioneLocation cr) {
+	public void salvaDirezioniIngresso(Location location, Location umbra, LocationPOJO cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
 		setIngresso(location, dirLocation, cr.getDirezioneIngresso(), cr.getIdLocationIngresso(), false);
@@ -136,7 +137,7 @@ public class LocationService {
 		direzioniRepo.save(dirUmbra);
 	}
 
-	public void salvaDirezioniUscita(Location location, Location umbra, CreazioneLocation cr) {
+	public void salvaDirezioniUscita(Location location, Location umbra, LocationPOJO cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
 		setUscita(dirLocation, cr.getDirezioneUscita(), cr.getSuperLocation(), false);
@@ -204,8 +205,12 @@ public class LocationService {
 	}
 
 	public void setMeteo(Location location, Long idMeteoGiorno, Long idMeteoNotte) {
-		location.setMeteoGiorno(meteoRepo.findById(idMeteoGiorno).get());
-		location.setMeteoNotte(meteoRepo.findById(idMeteoNotte).get());
+		if (idMeteoGiorno != 0) {
+			location.setMeteoGiorno(meteoRepo.findById(idMeteoGiorno).get());
+		}
+		if (idMeteoNotte != 0) {
+			location.setMeteoNotte(meteoRepo.findById(idMeteoNotte).get());
+		}
 	}
 
 	private Direzione generaDirezione(Location location) {
