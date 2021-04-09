@@ -77,13 +77,13 @@ public class UtentiREST {
 			if (password.equals(codificaPassword(mod.getVecchiaPsw()))) {
 				codificaPassword(mod.getUtente());
 				Optional<Utente> utente = utentiRepo.findById(mod.getUtente().getId());
-				if(!mod.getUtente().getNominativo().isBlank()) {
+				if (!mod.getUtente().getNominativo().isBlank()) {
 					utente.get().setNominativo(mod.getUtente().getNominativo());
 				}
 				if (!mod.getUtente().getEmail().isBlank()) {
 					utente.get().setEmail(mod.getUtente().getEmail());
 				}
-				if(!password.equals(codificaPassword(mod.getUtente().getPsw()))) {
+				if (!password.equals(codificaPassword(mod.getUtente().getPsw()))) {
 					utente.get().setPsw(mod.getUtente().getPsw());
 				}
 				return ResponseEntity.ok(utentiRepo.save(utente.get()));
@@ -94,11 +94,25 @@ public class UtentiREST {
 		}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 	}
-	
-	@PostMapping(path="/massimali",consumes = "application/json")
+
+	@PostMapping(path = "/massimali", consumes = "application/json")
 	@CrossOrigin
 	public void modificaMassimaliPg(@RequestBody Utente u) {
 		utentiRepo.save(u);
+	}
+
+	@GetMapping(path = "/findAllTipoUtente", produces = "application/json")
+	@CrossOrigin
+	public ResponseEntity<List<String>> findAllTipoUtente() {
+		List<String> models = utentiRepo.findAllTipoUtente();
+		return ResponseEntity.ok(models);
+	}
+
+	@PostMapping(path = "/findAllByTipoUtente", consumes = "application/json", produces = "application/json")
+	@CrossOrigin
+	public ResponseEntity<List<Utente>> findAllByTipoUtente(@RequestBody Utente model) {
+		List<Utente> models = utentiRepo.findAllByTipoUtente(model.getTipo());
+		return ResponseEntity.ok(models);
 	}
 
 	private void codificaPassword(Utente u) {
@@ -129,7 +143,7 @@ public class UtentiREST {
 		}
 		return null;
 	}
-	
+
 	private void setNumeroPg(Utente u) {
 		u.setNumeroPersonaggi(utentiRepo.findNumeroPgUtente(u.getId()));
 	}
