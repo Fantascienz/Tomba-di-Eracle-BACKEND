@@ -29,7 +29,6 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (sesso)")
 	public List<Personaggio> getAllOrderBySesso();
 	
-	
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (rango)")
 	public List<Personaggio> getAllOrderByRango();
 	
@@ -42,6 +41,8 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (id)")
 	public List<Personaggio> getAllOrderById();
 	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi ORDER BY (id_utente)")
+	public List<Personaggio> getAllOrderByIdUtente();
 	
 	@Query(nativeQuery = true, value = "SELECT COUNT(razza) FROM personaggi WHERE razza = :razza")
 	public int countRazza(@Param("razza") String razza);
@@ -49,4 +50,39 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	@Query(nativeQuery = true, value = "SELECT razza FROM personaggi GROUP BY (razza) ORDER BY (razza)")
 	public List<String> getAllRazzeGroupBy();
 	
+	@Query(nativeQuery = true, value= "SELECT * FROM personaggi WHERE razza = :razza ORDER BY (nominativo)")
+	public List<Personaggio> getAllByRazzaOrderBy(@Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (nominativo)")
+	public List<Personaggio> getAllByRazzaAndStatoOrderBy(@Param("razza") String razza, @Param("stato") String stato);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza ORDER BY (id)")
+	public List<Personaggio> getAllByRazzaOrderById(@Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value ="SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (id)")
+	public List<Personaggio> getAllByRazzaAndStatoOrderById(@Param("razza") String razza, @Param("stato") String stato);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza ORDER BY (sesso)")
+	public List<Personaggio> getAllByRazzaOrderBySesso(@Param("razza") String razza);
+	
+	@Query(nativeQuery= true, value ="SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (sesso)")
+	public List<Personaggio> getAllByRazzaAndStatoOrderBySesso(@Param("razza") String razza, @Param("stato") String stato);
+	
+	@Query(nativeQuery = true, value= "SELECT * FROM personaggi WHERE razza = :razza ORDER BY (rango)")
+	public List<Personaggio> getAllByRazzaOrderByRango(@Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (rango)")
+	public List<Personaggio> getAllByRazzaAndStatoOrderByRango(@Param("razza") String razza, @Param("stato") String stato);
+	
+	@Query(nativeQuery = true, value= "SELECT * FROM personaggi WHERE razza = :razza ORDER BY (data_creazione)")
+	public List<Personaggio> getAllByRazzaOrderByDataCreazione(@Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (data_creazione)")
+	public List<Personaggio> getAllByRazzaAndStatoOrderByDataCreazione(@Param("razza") String razza, @Param("stato") String stato);
+	
+	@Query(nativeQuery = true, value= "SELECT * FROM personaggi WHERE razza = :razza ORDER BY (id_utente)")
+	public List<Personaggio> getAllByRazzaOrderByIdUtente(@Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (id_utente)")
+	public List<Personaggio> getAllByRazzaAndStatoOrderByIdUtente(@Param("razza") String razza, @Param("stato") String stato);
 }

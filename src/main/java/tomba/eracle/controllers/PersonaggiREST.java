@@ -109,7 +109,6 @@ public class PersonaggiREST {
 	@CrossOrigin
 	@GetMapping(path= "/orderNominativo", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> getAllOrderByNominativo() {
-		
 		List<Personaggio> models = personaggiRepo.getAllOrderByNominativo();
 		
 		return ResponseEntity.ok(models);
@@ -154,6 +153,15 @@ public class PersonaggiREST {
 	}
 	
 	@CrossOrigin
+	@GetMapping(path = "/getAllOrderByIdUtente", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllOrderByIdUtente() {
+		
+		List<Personaggio> models = personaggiRepo.getAllOrderByIdUtente();
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
 	@PostMapping(path = "/razzaAndStato", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> findByRazzaAndStato(@RequestBody Personaggio model) {
 		
@@ -172,7 +180,114 @@ public class PersonaggiREST {
 		
 	}
 	
+	@CrossOrigin
+	@PostMapping(path = "/getAllRazzeOrderBy", consumes="application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzeOrderBy(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderBy(model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
 	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaAndStatoOrderBy", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaAndStatoOrderBy(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaAndStatoOrderBy(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaOrderById", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaOrderById(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderById(model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaAndStatoOrderById", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaAndStatoOrderById(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaAndStatoOrderById(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaOrderBySesso", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaOrderBySesso(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderBySesso(model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaAndStatoOrderBySesso", consumes="application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaAndStatoOrderBySesso(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaAndStatoOrderBySesso(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaOrderByRango", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaOrderByRango(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderByRango(model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaAndStatoOrderByRango", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaAndStatoOrderByRango(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaAndStatoOrderByRango(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaOrderByDataCreazione", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaOrderByDataCreazione(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderByDataCreazione(model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaAndStatoOrderByDataCreazione", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaAndStatoOrderByDataCreazione(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaAndStatoOrderByDataCreazione(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaOrderByIdUtente", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByRazzaOrderByIdUtente(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderByIdUtente(model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByRazzaAndStatoOrderByIdUtente", consumes = "application/json", produces = "application/json" )
+	public ResponseEntity<List<Personaggio>> getAllByRazzaAndStatoOrderByIdUtente(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByRazzaAndStatoOrderByIdUtente(model.getRazza(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+ 	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());
 		if (model != null) {
