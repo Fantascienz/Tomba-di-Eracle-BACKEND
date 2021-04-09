@@ -287,6 +287,61 @@ public class PersonaggiREST {
 		
 		return ResponseEntity.ok(models);
 	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteOrderByNominativo", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByNominativo(@RequestBody Utente model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByNominativo(model.getId());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteOrderBySesso", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderBySesso(@RequestBody Utente model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderBySesso(model.getId());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteOrderByRazza", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByRazza(@RequestBody Utente model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByRazza(model.getId());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteOrderById", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderById(@RequestBody Utente model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderById(model.getId());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteOrderByRango", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByRango(@RequestBody Utente model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByRango(model.getId());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteOrderByDataCreazione", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByDataCreazione(@RequestBody Utente model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByDataCreazione(model.getId());
+		
+		return ResponseEntity.ok(models);
+	}
+	
  	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());

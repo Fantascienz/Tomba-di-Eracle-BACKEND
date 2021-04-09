@@ -85,4 +85,22 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE razza = :razza AND stato = :stato ORDER BY (id_utente)")
 	public List<Personaggio> getAllByRazzaAndStatoOrderByIdUtente(@Param("razza") String razza, @Param("stato") String stato);
+
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (nominativo)")
+	public List<Personaggio> getAllByIdUtenteOrderByNominativo(@Param("idutente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (sesso)")
+	public List<Personaggio> getAllByIdUtenteOrderBySesso(@Param("idutente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (razza)")
+	public List<Personaggio> getAllByIdUtenteOrderByRazza(@Param("idutente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (id)")
+	public List<Personaggio> getAllByIdUtenteOrderById(@Param("idutente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (rango)")
+	public List<Personaggio> getAllByIdUtenteOrderByRango(@Param("idutente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (data_creazione)")
+	public List<Personaggio> getAllByIdUtenteOrderByDataCreazione(@Param("idutente") Long idUtente);
 }
