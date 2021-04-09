@@ -188,11 +188,13 @@ public class LocationService {
 	public void setDirezioni(List<Location> lista) {
 		for (Location location : lista) {
 			location.setDirezioni(direzioniRepo.findByIdLocation(location.getId()));
+			setNomiDirezioni(location.getDirezioni());
 		}
 	}
 
 	public void setDirezioni(Location location) {
 		location.setDirezioni(direzioniRepo.findByIdLocation(location.getId()));
+		setNomiDirezioni(location.getDirezioni());
 	}
 
 	private Direzione generaDirezione(Location location) {
@@ -265,6 +267,21 @@ public class LocationService {
 				Location location = stanze.get(i);
 				cancellaLocation(location);
 			}
+		}
+	}
+
+	private void setNomiDirezioni(Direzione direzioni) {
+		if (direzioni.getIdLocationNord() != null) {
+			direzioni.setNomeLocationNord(locationRepo.findById(direzioni.getIdLocationNord()).get().getNome());
+		}
+		if (direzioni.getIdLocationEst() != null) {
+			direzioni.setNomeLocationEst(locationRepo.findById(direzioni.getIdLocationEst()).get().getNome());
+		}
+		if (direzioni.getIdLocationSud() != null) {
+			direzioni.setNomeLocationSud(locationRepo.findById(direzioni.getIdLocationSud()).get().getNome());
+		}
+		if (direzioni.getIdLocationOvest() != null) {
+			direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
 		}
 	}
 
