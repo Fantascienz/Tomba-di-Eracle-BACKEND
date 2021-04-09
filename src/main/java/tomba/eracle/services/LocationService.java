@@ -149,6 +149,54 @@ public class LocationService {
 		}
 	}
 
+	public void aggiornaDirezioni(List<Direzione> direzioni, Long idLocation) {
+		for (Direzione d : direzioni) {
+			if (d.getIdLocationNord() != null && d.getIdLocationNord().equals(idLocation)) {
+				d.setIdLocationNord(null);
+			}
+			if (d.getIdLocationEst() != null && d.getIdLocationEst().equals(idLocation)) {
+				d.setIdLocationEst(null);
+			}
+			if (d.getIdLocationSud() != null && d.getIdLocationSud().equals(idLocation)) {
+				d.setIdLocationSud(null);
+			}
+			if (d.getIdLocationOvest() != null && d.getIdLocationOvest().equals(idLocation)) {
+				d.setIdLocationOvest(null);
+			}
+			direzioniRepo.save(d);
+		}
+	}
+
+	public Location generaUmbra(Location location, Umbra u) {
+		Location umbra = new Location();
+		umbra.setNome(location.getNome());
+		if (location.getTipo().equalsIgnoreCase("Stanza")) {
+			umbra.setTipo("Stanza Umbra");
+		} else {
+			umbra.setTipo("Umbra");
+		}
+		umbra.setAmbiente(location.getAmbiente());
+		umbra.setUrlImgGiorno(u.getUrlImgGiorno());
+		umbra.setUrlImgNotte(u.getUrlImgNotte());
+//		umbra.setUrlMinimappa(u.getUrlImgMinimappa);
+		umbra.setUrlAudio(u.getUrlAudio());
+		umbra.setMappa(location.getMappa());
+		umbra.setCreatore(location.getCreatore());
+		return locationRepo.save(umbra);
+	}
+
+	public void setDirezioni(List<Location> lista) {
+		for (Location location : lista) {
+			location.setDirezioni(direzioniRepo.findByIdLocation(location.getId()));
+			setNomiDirezioni(location.getDirezioni());
+		}
+	}
+
+	public void setDirezioni(Location location) {
+		location.setDirezioni(direzioniRepo.findByIdLocation(location.getId()));
+		setNomiDirezioni(location.getDirezioni());
+	}
+
 	private Direzione generaDirezione(Location location) {
 		Direzione dir = new Direzione();
 		dir.setIdLocation(location.getId());
@@ -204,42 +252,6 @@ public class LocationService {
 		}
 	}
 
-	public void aggiornaDirezioni(List<Direzione> direzioni, Long idLocation) {
-		for (Direzione d : direzioni) {
-			if (d.getIdLocationNord() != null && d.getIdLocationNord().equals(idLocation)) {
-				d.setIdLocationNord(null);
-			}
-			if (d.getIdLocationEst() != null && d.getIdLocationEst().equals(idLocation)) {
-				d.setIdLocationEst(null);
-			}
-			if (d.getIdLocationSud() != null && d.getIdLocationSud().equals(idLocation)) {
-				d.setIdLocationSud(null);
-			}
-			if (d.getIdLocationOvest() != null && d.getIdLocationOvest().equals(idLocation)) {
-				d.setIdLocationOvest(null);
-			}
-			direzioniRepo.save(d);
-		}
-	}
-
-	public Location generaUmbra(Location location, Umbra u) {
-		Location umbra = new Location();
-		umbra.setNome(location.getNome());
-		if (location.getTipo().equalsIgnoreCase("Stanza")) {
-			umbra.setTipo("Stanza Umbra");
-		} else {
-			umbra.setTipo("Umbra");
-		}
-		umbra.setAmbiente(location.getAmbiente());
-		umbra.setUrlImgGiorno(u.getUrlImgGiorno());
-		umbra.setUrlImgNotte(u.getUrlImgNotte());
-//		umbra.setUrlMinimappa(u.getUrlImgMinimappa);
-		umbra.setUrlAudio(u.getUrlAudio());
-		umbra.setMappa(location.getMappa());
-		umbra.setCreatore(location.getCreatore());
-		return locationRepo.save(umbra);
-	}
-
 	private void eliminaStanze(List<Location> stanze, List<Location> stanzeUmbra) {
 		if (stanzeUmbra != null) {
 			if ((stanze.size() == stanzeUmbra.size()) && (stanze != null && stanzeUmbra != null)
@@ -255,6 +267,21 @@ public class LocationService {
 				Location location = stanze.get(i);
 				cancellaLocation(location);
 			}
+		}
+	}
+
+	private void setNomiDirezioni(Direzione direzioni) {
+		if (direzioni.getIdLocationNord() != null) {
+			direzioni.setNomeLocationNord(locationRepo.findById(direzioni.getIdLocationNord()).get().getNome());
+		}
+		if (direzioni.getIdLocationEst() != null) {
+			direzioni.setNomeLocationEst(locationRepo.findById(direzioni.getIdLocationEst()).get().getNome());
+		}
+		if (direzioni.getIdLocationSud() != null) {
+			direzioni.setNomeLocationSud(locationRepo.findById(direzioni.getIdLocationSud()).get().getNome());
+		}
+		if (direzioni.getIdLocationOvest() != null) {
+			direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
 		}
 	}
 

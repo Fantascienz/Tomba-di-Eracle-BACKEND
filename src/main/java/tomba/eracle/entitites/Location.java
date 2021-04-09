@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import javax.persistence.Transient;
+
 import lombok.Data;
 
 @Entity
@@ -70,6 +72,9 @@ public class Location {
 	@ManyToOne
 	@JoinColumn(name = "id_creatore")
 	private Utente creatore; 
+	
+	@Transient
+	private Direzione direzioni;
 	
 	
 	}

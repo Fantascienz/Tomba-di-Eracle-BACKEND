@@ -21,18 +21,6 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_sublocation FROM stanze WHERE id_location = :id)",nativeQuery = true)
 	List<Location> findStanzeByLocation(@Param("id") Long idLocation);
 
-	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_nord IS NULL AND tipo = 'Reame')", nativeQuery = true)
-	List<Location> findByNordNull();
-	
-	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_est IS NULL AND tipo = 'Reame')", nativeQuery = true)
-	List<Location> findByEstNull();
-	
-	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_sud IS NULL AND tipo = 'Reame')", nativeQuery = true)
-	List<Location> findBySudNull();
-	
-	@Query(value = "SELECT * FROM locations WHERE id IN (SELECT id_location FROM direzioni WHERE id_location_ovest IS NULL AND tipo = 'Reame')", nativeQuery = true)
-	List<Location> findByOvestNull();
-	
 	@Query(value = "SELECT * FROM locations WHERE mappa = 'Esterna' AND tipo = :tipo", nativeQuery = true)
 	List<Location> findEsterneByTipo(@Param("tipo")String tipo);
 }

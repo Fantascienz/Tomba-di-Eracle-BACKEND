@@ -15,6 +15,7 @@ import tomba.eracle.entitites.Personaggio;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 import tomba.eracle.repositories.PersonaggiRepo;
+import tomba.eracle.services.LocationService;
 
 @RestController
 @RequestMapping("/game")
@@ -22,31 +23,38 @@ public class GameREST {
 
 	@Autowired
 	private LocationRepo locationRepo;
-	
+
 	@Autowired
 	private DirezioniRepo direzioniRepo;
-	
+
 	@Autowired
 	private PersonaggiRepo personaggiRepo;
-	
+
+	@Autowired
+	private LocationService locationService;
+
 	@GetMapping(path = "/ultimaLocation/{id}", produces = "application/json")
 	@CrossOrigin
-	public Location ultimaLocation (@PathVariable("id") Long id) {
-		return locationRepo.findUltimaLocationPg(id);
+	public Location ultimaLocation(@PathVariable("id") Long id) {
+		Location location = locationRepo.findUltimaLocationPg(id);
+		locationService.setDirezioni(location);
+		return location;
 	}
-	
+
 	@GetMapping(path = "/direzioniRelativeLocation/{id}", produces = "application/json")
 	@CrossOrigin
-	public Direzione direzioniRelativeLocation (@PathVariable("id") Long id) {
+	public Direzione direzioniRelativeLocation(@PathVariable("id") Long id) {
 		return direzioniRepo.findByIdLocation(id);
 	}
-	
+
 	@PostMapping(path = "/naviga/{id}", produces = "application/json", consumes = "application/json")
 	@CrossOrigin
-	public Location naviga (@PathVariable("id") Long idLocation, @RequestBody Personaggio pg) {
+	public Location naviga(@PathVariable("id") Long idLocation, @RequestBody Personaggio pg) {
 		pg.setUltimaLocation(idLocation);
 		personaggiRepo.save(pg);
-		return locationRepo.findById(idLocation).get();
+		Location location = locationRepo.findById(idLocation).get();
+		locationService.setDirezioni(location);
+		return location;
 	}
-	
+
 }
