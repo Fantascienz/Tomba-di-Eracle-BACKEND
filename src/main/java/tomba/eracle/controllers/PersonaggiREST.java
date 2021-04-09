@@ -171,6 +171,24 @@ public class PersonaggiREST {
 	}
 	
 	@CrossOrigin
+	@PostMapping(path = "/getByIdUtenteAndRazzaAndStato", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getByIdUtenteAndRazzaAndStato(@RequestBody Personaggio model) {
+		System.out.println(model.getRazza());
+		
+		List<Personaggio> models = personaggiRepo.getByIdUtenteAndRazzaAndStato(model.getUtente().getId(), model.getRazza(), model.getStato());
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path ="/getByIdUtenteAndStato", consumes ="application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getByIdUtenteAndStato(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getByIdUtenteAndStato(model.getUtente().getId(), model.getStato());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
 	@GetMapping(path ="/getAllRazze", produces = "application/json")
 	public ResponseEntity<List<String>> getAllRazzeGroupBy() {
 		
@@ -374,6 +392,24 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderBySesso(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderBySesso(model.getUtente().getId(), model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteAndRazzaOrderByRango", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderByRango(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderByRango(model.getUtente().getId(), model.getRazza());
+		
+		return ResponseEntity.ok(models);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/getAllByIdUtenteAndRazzaOrderByDataCreazione", consumes = "application/json", produces ="application/json")
+	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderByDataCreazione(@RequestBody Personaggio model) {
+		
+		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderByDataCreazione(model.getUtente().getId(), model.getRazza());
 		
 		return ResponseEntity.ok(models);
 	}
