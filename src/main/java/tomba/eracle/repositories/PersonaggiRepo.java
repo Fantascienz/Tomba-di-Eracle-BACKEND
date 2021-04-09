@@ -103,4 +103,16 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente ORDER BY (data_creazione)")
 	public List<Personaggio> getAllByIdUtenteOrderByDataCreazione(@Param("idutente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente AND razza = :razza")
+	public List<Personaggio> getAllByIdUtenteAndRazza(@Param("idutente") Long idUtente, @Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente AND razza = :razza ORDER BY (id)")
+	public List<Personaggio> getAllByIdUtenteAndRazzaOrderById(@Param("idutente") Long idUtente, @Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente AND razza = :razza ORDER BY (nominativo)")
+	public List<Personaggio> getAllByIdUtenteAndRazzaOrderByNominativo(@Param("idutente") Long idUtente, @Param("razza") String razza);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente AND razza = :razza ORDER BY (sesso)")
+	public List<Personaggio> getAllByIdUtenteAndRazzaOrderBySesso(@Param("idutente") Long idUtente, @Param("razza") String razza);
 }
