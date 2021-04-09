@@ -19,4 +19,8 @@ public class CreazioneLocation {
 	private Umbra umbra;
 	
 	private Long superLocation;
+	
+	private Long meteoGiorno;
+	
+	private Long meteoNotte;
 }

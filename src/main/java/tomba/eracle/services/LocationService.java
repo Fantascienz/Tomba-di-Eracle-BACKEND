@@ -13,6 +13,7 @@ import tomba.eracle.pojo.CreazioneLocation;
 import tomba.eracle.pojo.Umbra;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
+import tomba.eracle.repositories.MeteoRepo;
 import tomba.eracle.repositories.StanzeRepo;
 
 @Service
@@ -26,6 +27,9 @@ public class LocationService {
 
 	@Autowired
 	private StanzeRepo stanzeRepo;
+
+	@Autowired
+	private MeteoRepo meteoRepo;
 
 	public void cancellaLocation(Location location, Location umbra) {
 		// LOCATION STANZE DA ELIMINARE
@@ -179,6 +183,8 @@ public class LocationService {
 		umbra.setUrlImgGiorno(u.getUrlImgGiorno());
 		umbra.setUrlImgNotte(u.getUrlImgNotte());
 //		umbra.setUrlMinimappa(u.getUrlImgMinimappa);
+		umbra.setMeteoGiorno(location.getMeteoGiorno());
+		umbra.setMeteoNotte(location.getMeteoNotte());
 		umbra.setUrlAudio(u.getUrlAudio());
 		umbra.setMappa(location.getMappa());
 		umbra.setCreatore(location.getCreatore());
@@ -195,6 +201,11 @@ public class LocationService {
 	public void setDirezioni(Location location) {
 		location.setDirezioni(direzioniRepo.findByIdLocation(location.getId()));
 		setNomiDirezioni(location.getDirezioni());
+	}
+
+	public void setMeteo(Location location, Long idMeteoGiorno, Long idMeteoNotte) {
+		location.setMeteoGiorno(meteoRepo.findById(idMeteoGiorno).get());
+		location.setMeteoNotte(meteoRepo.findById(idMeteoNotte).get());
 	}
 
 	private Direzione generaDirezione(Location location) {

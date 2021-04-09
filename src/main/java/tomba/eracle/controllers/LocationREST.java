@@ -51,6 +51,7 @@ public class LocationREST {
 	public void creaLocation(@RequestBody CreazioneLocation pojo) {
 		pojo.getLocation().setTipo("Reame");
 		pojo.getLocation().setMappa("Esterna");
+		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
 		Location location = locationRepo.save(pojo.getLocation());
 		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
 		locationService.salvaDirezioniIngresso(location, umbra, pojo);
