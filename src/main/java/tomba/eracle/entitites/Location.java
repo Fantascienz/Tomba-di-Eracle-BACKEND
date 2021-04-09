@@ -50,8 +50,16 @@ public class Location {
 	@Column(name = "chiave")
 	private String chiave;
 	
-	@Column(name = "meteo")
-	private String meteo;
+//	@Column(name = "meteo")
+//	private String meteo;
+	
+	@ManyToOne
+	@JoinColumn(name= "meteo_giorno")
+	private Meteo meteoGiorno;
+	
+	@ManyToOne
+	@JoinColumn(name= "meteo_notte")
+	private Meteo meteoNotte;
 	
 	@Column(name = "fascia_oraria")
 	private String fasciaOraria;

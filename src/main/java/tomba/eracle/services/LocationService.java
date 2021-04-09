@@ -95,11 +95,11 @@ public class LocationService {
 		} else if (!mod.getFasciaOraria().isBlank()) {
 			location.setFasciaOraria(mod.getFasciaOraria());
 		}
-		if (mod.getMeteo().equalsIgnoreCase("ripristina reale")) {
-			location.setMeteo(null);
-		} else if (!mod.getMeteo().isBlank()) {
-			location.setMeteo(mod.getMeteo());
-		}
+//		if (mod.getMeteo().equalsIgnoreCase("ripristina reale")) {
+//			location.setMeteo(null);
+//		} else if (!mod.getMeteo().isBlank()) {
+//			location.setMeteo(mod.getMeteo());
+//		}
 		if (!mod.getChiave().isBlank()) {
 			location.setChiave(mod.getChiave());
 		}
