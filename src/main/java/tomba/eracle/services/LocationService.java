@@ -227,6 +227,12 @@ public class LocationService {
 		setNomiDirezioni(location.getDirezioni());
 	}
 
+	public void setNumeroStanze(List<Location> lista) {
+		for (Location location : lista) {
+			location.setNumeroStanze(stanzeRepo.findNumeroStanzeByLocation(location.getId()));
+		}
+	}
+
 	public void setMeteo(Location location, Long idMeteoGiorno, Long idMeteoNotte) {
 		if (idMeteoGiorno != 0) {
 			location.setMeteoGiorno(meteoRepo.findById(idMeteoGiorno).get());

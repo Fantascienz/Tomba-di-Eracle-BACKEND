@@ -43,6 +43,7 @@ public class LocationREST {
 	public List<Location> getAllLocations() {
 		List<Location> lista = (List<Location>) locationRepo.findAll();
 		locationService.setDirezioni(lista);
+		locationService.setNumeroStanze(lista);
 		return lista;
 	}
 
