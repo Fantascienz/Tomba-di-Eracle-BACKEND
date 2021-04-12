@@ -52,9 +52,6 @@ public class Location {
 	@Column(name = "chiave")
 	private String chiave;
 	
-//	@Column(name = "meteo")
-//	private String meteo;
-	
 	@ManyToOne
 	@JoinColumn(name= "meteo_giorno")
 	private Meteo meteoGiorno;
@@ -75,6 +72,9 @@ public class Location {
 	
 	@Transient
 	private Direzione direzioni;
+	
+	@Transient
+	private int numeroStanze;
 	
 	
 	}

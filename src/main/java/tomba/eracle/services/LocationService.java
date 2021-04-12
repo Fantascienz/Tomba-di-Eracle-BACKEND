@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
+import tomba.eracle.entitites.Meteo;
 import tomba.eracle.entitites.Stanza;
-import tomba.eracle.pojo.CreazioneLocation;
+import tomba.eracle.pojo.LocationPOJO;
 import tomba.eracle.pojo.Umbra;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
+import tomba.eracle.repositories.MeteoRepo;
 import tomba.eracle.repositories.StanzeRepo;
 
 @Service
@@ -26,6 +28,9 @@ public class LocationService {
 
 	@Autowired
 	private StanzeRepo stanzeRepo;
+
+	@Autowired
+	private MeteoRepo meteoRepo;
 
 	public void cancellaLocation(Location location, Location umbra) {
 		// LOCATION STANZE DA ELIMINARE
@@ -84,42 +89,65 @@ public class LocationService {
 	}
 
 	public void modificaLocation(Location location, Location mod) {
+		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(mod.getId()));
 		if (!mod.getNome().isBlank()) {
 			location.setNome(mod.getNome());
-			Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(mod.getId()));
 			umbra.get().setNome(mod.getNome());
 			locationRepo.save(umbra.get());
 		}
-		if (mod.getFasciaOraria().equalsIgnoreCase("ripristina reale")) {
-			location.setFasciaOraria(null);
-		} else if (!mod.getFasciaOraria().isBlank()) {
-			location.setFasciaOraria(mod.getFasciaOraria());
+		if (mod.getFasciaOraria() != null) {
+			if (mod.getFasciaOraria().equalsIgnoreCase("ripristina reale")) {
+				location.setFasciaOraria(null);
+			} else if (!mod.getFasciaOraria().isBlank()) {
+				location.setFasciaOraria(mod.getFasciaOraria());
+			}
 		}
-//		if (mod.getMeteo().equalsIgnoreCase("ripristina reale")) {
-//			location.setMeteo(null);
-//		} else if (!mod.getMeteo().isBlank()) {
-//			location.setMeteo(mod.getMeteo());
-//		}
-		if (!mod.getChiave().isBlank()) {
-			location.setChiave(mod.getChiave());
+		if (mod.getChiave() != null) {
+			if (!mod.getChiave().isBlank()) {
+				location.setChiave(mod.getChiave());
+			}
 		}
-		if (!mod.getUrlImgGiorno().isBlank()) {
-			location.setUrlImgGiorno(mod.getUrlImgGiorno());
+		if (mod.getUrlImgGiorno() != null) {
+			if (!mod.getUrlImgGiorno().isBlank()) {
+				location.setUrlImgGiorno(mod.getUrlImgGiorno());
+			}
 		}
-		if (!mod.getUrlImgNotte().isBlank()) {
-			location.setUrlImgNotte(mod.getUrlImgNotte());
+		if (mod.getUrlImgNotte() != null) {
+			if (!mod.getUrlImgNotte().isBlank()) {
+				location.setUrlImgNotte(mod.getUrlImgNotte());
+			}
 		}
-		if (!mod.getUrlMinimappa().isBlank()) {
-			location.setUrlMinimappa(mod.getUrlMinimappa());
+		if (mod.getUrlMinimappa() != null) {
+			if (!mod.getUrlMinimappa().isBlank()) {
+				location.setUrlMinimappa(mod.getUrlMinimappa());
+			}
 		}
-		if (!mod.getUrlAudio().isBlank()) {
-			location.setUrlAudio(mod.getUrlAudio());
+		if (mod.getUrlAudio() != null) {
+			if (!mod.getUrlAudio().isBlank()) {
+				location.setUrlAudio(mod.getUrlAudio());
+			}
+		}
+		if (mod.getMeteoGiorno() != null && location.getMeteoGiorno() != mod.getMeteoGiorno()) {
+			location.setMeteoGiorno(mod.getMeteoGiorno());
+			umbra.get().setMeteoGiorno(mod.getMeteoGiorno());
+			locationRepo.save(umbra.get());
+			if (location.getMappa().equalsIgnoreCase("Macro") || umbra.get().getMappa().equalsIgnoreCase("Mappa")) {
+				setMeteoMacroMappa(mod.getMeteoGiorno(), null);
+			}
+		}
+		if (mod.getMeteoNotte() != null && location.getMeteoNotte() != mod.getMeteoNotte()) {
+			location.setMeteoNotte(mod.getMeteoNotte());
+			umbra.get().setMeteoNotte(mod.getMeteoNotte());
+			locationRepo.save(umbra.get());
+			if (location.getMappa().equalsIgnoreCase("Macro") || umbra.get().getMappa().equalsIgnoreCase("Mappa")) {
+				setMeteoMacroMappa(null, mod.getMeteoNotte());
+			}
 		}
 		location.setData(mod.getData());
 		locationRepo.save(location);
 	}
 
-	public void salvaDirezioniIngresso(Location location, Location umbra, CreazioneLocation cr) {
+	public void salvaDirezioniIngresso(Location location, Location umbra, LocationPOJO cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
 		setIngresso(location, dirLocation, cr.getDirezioneIngresso(), cr.getIdLocationIngresso(), false);
@@ -132,7 +160,7 @@ public class LocationService {
 		direzioniRepo.save(dirUmbra);
 	}
 
-	public void salvaDirezioniUscita(Location location, Location umbra, CreazioneLocation cr) {
+	public void salvaDirezioniUscita(Location location, Location umbra, LocationPOJO cr) {
 		// CREO LA DIREZIONE LOCATION REAME SU LOCATION REAME
 		Direzione dirLocation = generaDirezione(location);
 		setUscita(dirLocation, cr.getDirezioneUscita(), cr.getSuperLocation(), false);
@@ -179,6 +207,8 @@ public class LocationService {
 		umbra.setUrlImgGiorno(u.getUrlImgGiorno());
 		umbra.setUrlImgNotte(u.getUrlImgNotte());
 //		umbra.setUrlMinimappa(u.getUrlImgMinimappa);
+		umbra.setMeteoGiorno(location.getMeteoGiorno());
+		umbra.setMeteoNotte(location.getMeteoNotte());
 		umbra.setUrlAudio(u.getUrlAudio());
 		umbra.setMappa(location.getMappa());
 		umbra.setCreatore(location.getCreatore());
@@ -195,6 +225,21 @@ public class LocationService {
 	public void setDirezioni(Location location) {
 		location.setDirezioni(direzioniRepo.findByIdLocation(location.getId()));
 		setNomiDirezioni(location.getDirezioni());
+	}
+
+	public void setNumeroStanze(List<Location> lista) {
+		for (Location location : lista) {
+			location.setNumeroStanze(stanzeRepo.findNumeroStanzeByLocation(location.getId()));
+		}
+	}
+
+	public void setMeteo(Location location, Long idMeteoGiorno, Long idMeteoNotte) {
+		if (idMeteoGiorno != 0) {
+			location.setMeteoGiorno(meteoRepo.findById(idMeteoGiorno).get());
+		}
+		if (idMeteoNotte != 0) {
+			location.setMeteoNotte(meteoRepo.findById(idMeteoNotte).get());
+		}
 	}
 
 	private Direzione generaDirezione(Location location) {
@@ -283,6 +328,30 @@ public class LocationService {
 		if (direzioni.getIdLocationOvest() != null) {
 			direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
 		}
+	}
+
+	private void setMeteoMacroMappa(Meteo giorno, Meteo notte) {
+		List<Location> listaMacro = locationRepo.findMacroLocations();
+		for (Location location : listaMacro) {
+			if (giorno != null) {
+				location.setMeteoGiorno(giorno);
+			}
+			if (notte != null) {
+				location.setMeteoNotte(notte);
+			}
+			locationRepo.save(location);
+			List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
+			for (Location stanza : stanze) {
+				if (giorno != null) {
+					stanza.setMeteoGiorno(giorno);
+				}
+				if (notte != null) {
+					stanza.setMeteoNotte(notte);
+				}
+				locationRepo.save(stanza);
+			}
+		}
+
 	}
 
 }

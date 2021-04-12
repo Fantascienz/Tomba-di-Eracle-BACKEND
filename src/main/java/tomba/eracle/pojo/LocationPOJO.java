@@ -4,7 +4,7 @@ import lombok.Data;
 import tomba.eracle.entitites.Location;
 
 @Data
-public class CreazioneLocation {
+public class LocationPOJO {
 
 	private Location location;
 	
@@ -19,4 +19,8 @@ public class CreazioneLocation {
 	private Umbra umbra;
 	
 	private Long superLocation;
+	
+	private Long meteoGiorno;
+	
+	private Long meteoNotte;
 }

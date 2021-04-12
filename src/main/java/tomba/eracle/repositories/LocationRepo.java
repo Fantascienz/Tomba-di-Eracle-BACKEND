@@ -23,4 +23,7 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 
 	@Query(value = "SELECT * FROM locations WHERE mappa = 'Esterna' AND tipo = :tipo", nativeQuery = true)
 	List<Location> findEsterneByTipo(@Param("tipo")String tipo);
+	
+	@Query(value = "SELECT * FROM locations WHERE id >= 1 AND id <= 288", nativeQuery = true)
+	List<Location> findMacroLocations ();
 }
