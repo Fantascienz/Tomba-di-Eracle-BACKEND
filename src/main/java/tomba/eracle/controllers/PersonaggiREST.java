@@ -196,7 +196,6 @@ public class PersonaggiREST {
 	@CrossOrigin
 	@PostMapping(path = "/getAllRazzeOrderBy", consumes="application/json", produces = "application/json")
 	public ResponseEntity<List<Personaggio>> getAllByRazzeOrderBy(@RequestBody Personaggio model) {
-		
 		List<Personaggio> models = personaggiRepo.getAllByRazzaOrderBy(model.getRazza());
 		
 		return ResponseEntity.ok(models);
