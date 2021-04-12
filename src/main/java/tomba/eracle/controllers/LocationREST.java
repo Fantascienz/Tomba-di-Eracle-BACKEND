@@ -72,7 +72,6 @@ public class LocationREST {
 		stanza.setLocation(superLocation.get());
 		stanza.setSubLocation(location);
 		stanzeRepo.save(stanza);
-		// gestire tipo stanza umbra
 		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
 				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
 			System.out.println("CIAO FACCIO UNA STANZA UMBRA");
