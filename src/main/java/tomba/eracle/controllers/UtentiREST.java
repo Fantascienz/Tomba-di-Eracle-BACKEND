@@ -114,7 +114,22 @@ public class UtentiREST {
 		List<Utente> models = utentiRepo.findAllByTipoUtente(model.getTipo());
 		return ResponseEntity.ok(models);
 	}
-
+	
+	@PostMapping(path = "/findByNominativo", consumes  = "application/json", produces = "application/json")
+	@CrossOrigin
+	public ResponseEntity<List<Utente>> findByNominativo(@RequestBody Utente model) {
+		System.out.println(model.getNominativo());
+		List<Utente> models = utentiRepo.findByNominativo(model.getNominativo());
+		return ResponseEntity.ok(models);
+	}
+	
+	@PostMapping(path = "/findByNominativoAndTipo", consumes = "application/json", produces = "application/json")
+	@CrossOrigin
+	public ResponseEntity<List<Utente>> findByNominativoAndTipo(@RequestBody Utente model) {
+		List<Utente> models = utentiRepo.findByNominativoAndTipo(model.getNominativo(), model.getTipo());
+		return ResponseEntity.ok(models);
+	}
+	
 	private void codificaPassword(Utente u) {
 		String password = u.getPsw();
 		MessageDigest md;

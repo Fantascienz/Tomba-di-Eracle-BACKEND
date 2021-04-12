@@ -24,5 +24,10 @@ public interface UtentiRepo extends CrudRepository<Utente, Long>{
 	@Query(nativeQuery = true, value = "SELECT * FROM utenti WHERE tipo = :tipo")
 	public List<Utente> findAllByTipoUtente(@Param("tipo") String tipo);
 	
+	@Query(nativeQuery = true, value = "SELECT * FROM utenti WHERE nominativo LIKE CONCAT('%',:nominativo,'%')")
+	public List<Utente> findByNominativo(@Param("nominativo") String nominativo);
+	
+	@Query(nativeQuery = true, value = "SELECT * FROM utenti WHERE nominativo LIKE CONCAT('%',:nominativo,'%') AND tipo = :tipo")
+	public List<Utente> findByNominativoAndTipo(@Param("nominativo") String nominativo, @Param("tipo") String tipo);
 	
 }

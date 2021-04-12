@@ -44,16 +44,11 @@ public class PersonaggiREST {
 	@CrossOrigin
 	@PostMapping(consumes = "application/json")
 	public ResponseEntity<Personaggio> createPg(@RequestBody Personaggio model) {
+		System.out.println(model.getRazza());
 		if(!findByNominativo(model)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 		}
-		
-		if(model.getRazza() != "Umano" || model.getRazza() != "Lupo" || model.getRazza() != "Meticcio") {
-			if(countRazza(model.getRazza())) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-			}
-		}
-		
+
 		model.setDataCreazione(LocalDate.now());
 		if(model.getNomeGarou() != null) {
 			model.setChirottero(false);
@@ -424,12 +419,5 @@ public class PersonaggiREST {
 	
 	}
 	
-	private boolean countRazza(String razza) {
-		
-		if(personaggiRepo.countRazza(razza) >= 1) {
-			return true;
-		}
-		return false;
-	}
 
 }
