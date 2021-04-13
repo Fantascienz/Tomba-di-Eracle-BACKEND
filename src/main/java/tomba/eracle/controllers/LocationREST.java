@@ -41,7 +41,7 @@ public class LocationREST {
 	@GetMapping(produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllLocations() {
-		List<Location> lista = (List<Location>) locationRepo.findAll();
+		List<Location> lista = (List<Location>) locationRepo.getAllLocations();
 		locationService.setDirezioni(lista);
 		locationService.setNumeroStanze(lista);
 		return lista;
