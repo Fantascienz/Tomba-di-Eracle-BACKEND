@@ -10,7 +10,7 @@ import tomba.eracle.entitites.Messaggio;
 
 public interface MessaggiRepo extends CrudRepository<Messaggio, Long> {
 
-	@Query(value = "SELECT * FROM messaggi WHERE id_utente = :id", nativeQuery = true)
+	@Query(value = "SELECT * FROM messaggi WHERE id_utente = :id ORDER BY id DESC", nativeQuery = true)
 	List<Messaggio> getConversazione(@Param("id") Long idUtente);
 	
 	@Query(value = "SELECT DISTINCT(id_utente) FROM messaggi", nativeQuery = true)
