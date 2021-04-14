@@ -1,5 +1,7 @@
 package tomba.eracle.entitites;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +24,10 @@ public class Messaggio {
 	private Long id;
 	
 	@ManyToOne
+	@JoinColumn(name = "id_admin")
+	private Utente admin;
+	
+	@ManyToOne
 	@JoinColumn(name = "id_utente")
 	private Utente utente;
 	
@@ -30,6 +36,9 @@ public class Messaggio {
 	
 	@Column(name = "inviato_da")
 	private String inviatoDa;
+	
+	@Column(name = "inviato_alle")
+	private LocalDate inviatoAlle;
 	
 
 }
