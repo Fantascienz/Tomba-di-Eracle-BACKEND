@@ -20,6 +20,9 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	public List<Personaggio> findByStato(String stato);
 	
+	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE chirottero = true")
+	List<Personaggio> getAbilitatiChirottero ();
+	
 	@Query(nativeQuery = true, value = "SELECT * FROM  personaggi ORDER BY (razza)")
 	public List<Personaggio> getAllOrderByRazza();
 	

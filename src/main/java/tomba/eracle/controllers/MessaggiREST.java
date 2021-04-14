@@ -20,7 +20,7 @@ import tomba.eracle.repositories.UtentiRepo;
 
 @RestController
 @RequestMapping("/messaggi")
-public class MessaggiController {
+public class MessaggiREST {
 	
 	@Autowired
 	private MessaggiRepo messaggiRepo;
