@@ -65,8 +65,10 @@ public class LocationREST {
 		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
 		pojo.getLocation().setMappa(mappa);
 		superLocation = locationRepo.findById(pojo.getSuperLocation());
-		Location location = locationRepo.save(pojo.getLocation());
-		System.out.println(superLocation.get().getTipo());
+		Location location = pojo.getLocation();
+		location.setMeteoGiorno(superLocation.get().getMeteoGiorno());
+		location.setMeteoNotte(superLocation.get().getMeteoNotte());
+		location = locationRepo.save(pojo.getLocation());
 		// STANZE
 		Stanza stanza = new Stanza();
 		stanza.setLocation(superLocation.get());
@@ -74,9 +76,7 @@ public class LocationREST {
 		stanzeRepo.save(stanza);
 		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
 				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-			System.out.println("CIAO FACCIO UNA STANZA UMBRA");
 			Location umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
-			System.out.println(umbra);
 			umbra = locationRepo.save(umbra);
 			Stanza stanzaUmbra = new Stanza();
 			stanzaUmbra.setLocation(
