@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tomba.eracle.entitites.Utente;
 import tomba.eracle.pojo.ModificaUtente;
+import tomba.eracle.repositories.PersonaggiRepo;
 import tomba.eracle.repositories.UtentiRepo;
 
 @RestController
@@ -27,6 +28,9 @@ public class UtentiREST {
 
 	@Autowired
 	private UtentiRepo utentiRepo;
+	
+	@Autowired
+	private PersonaggiRepo personaggiRepo;
 
 	@GetMapping(produces = "application/json")
 	@CrossOrigin
@@ -63,6 +67,10 @@ public class UtentiREST {
 		if (utente == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
+		utente.setContatoreUmani(personaggiRepo.countUmanoByUtente(utente.getId()));
+		utente.setContatoreHomid(personaggiRepo.countHomidByUtente(utente.getId()));
+		utente.setContatoreLupus(personaggiRepo.countLupusByUtente(utente.getId()));
+		utente.setContatoreMetis(personaggiRepo.countMetisByUtente(utente.getId()));
 		return ResponseEntity.ok(utente);
 
 	}

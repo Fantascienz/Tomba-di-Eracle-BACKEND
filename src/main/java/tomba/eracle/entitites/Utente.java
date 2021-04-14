@@ -55,8 +55,19 @@ public class Utente {
 	@JsonIgnore
 	private List<Personaggio> personaggi;
 	
+	
 	@Transient
 	private int numeroPersonaggi;
 	
+	@Transient
+	private Integer contatoreUmani;
 	
+	@Transient
+	private Integer contatoreLupus;
+	
+	@Transient
+	private Integer contatoreHomid;
+	
+	@Transient
+	private Integer contatoreMetis;
 }

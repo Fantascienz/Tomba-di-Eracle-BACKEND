@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tomba.eracle.entitites.Personaggio;
 import tomba.eracle.entitites.Utente;
 import tomba.eracle.repositories.PersonaggiRepo;
+import tomba.eracle.repositories.UtentiRepo;
 
 @RestController
 @RequestMapping("/personaggi")
@@ -24,6 +25,9 @@ public class PersonaggiREST {
 
 	@Autowired
 	private PersonaggiRepo personaggiRepo;
+	
+	@Autowired
+	private UtentiRepo utentiRepo;
 	
 	@CrossOrigin
 	@GetMapping(produces = "application/json")
@@ -43,7 +47,7 @@ public class PersonaggiREST {
 
 	@CrossOrigin
 	@PostMapping(consumes = "application/json")
-	public ResponseEntity<Personaggio> createPg(@RequestBody Personaggio model) {
+	public ResponseEntity<Utente> createPg(@RequestBody Personaggio model) {
 		System.out.println(model.getRazza());
 		if(!findByNominativo(model)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
@@ -58,8 +62,13 @@ public class PersonaggiREST {
 		model.setTribu("Senza Tribu");
 		model.setUltimaLocation((long) 68);
 		personaggiRepo.save(model);
-
-		return ResponseEntity.ok(model);
+		
+		Utente utente = utentiRepo.findById(model.getUtente().getId()).get();
+		utente.setContatoreUmani(personaggiRepo.countUmanoByUtente(utente.getId()));
+		utente.setContatoreHomid(personaggiRepo.countHomidByUtente(utente.getId()));
+		utente.setContatoreLupus(personaggiRepo.countLupusByUtente(utente.getId()));
+		utente.setContatoreMetis(personaggiRepo.countMetisByUtente(utente.getId()));
+		return ResponseEntity.ok(utente);
 	}
 	
 	
@@ -323,7 +332,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByRazza(@RequestBody Utente model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByRazza(model.getId());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -332,7 +340,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderById(@RequestBody Utente model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderById(model.getId());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -341,7 +348,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByRango(@RequestBody Utente model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByRango(model.getId());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -350,7 +356,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteOrderByDataCreazione(@RequestBody Utente model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteOrderByDataCreazione(model.getId());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -359,7 +364,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazza(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazza(model.getUtente().getId(), model.getRazza());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -368,7 +372,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderById(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderById(model.getUtente().getId(), model.getRazza());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -377,7 +380,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderByNominativo(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderByNominativo(model.getUtente().getId(), model.getRazza());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -386,7 +388,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderBySesso(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderBySesso(model.getUtente().getId(), model.getRazza());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -395,7 +396,6 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderByRango(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderByRango(model.getUtente().getId(), model.getRazza());
-		
 		return ResponseEntity.ok(models);
 	}
 	
@@ -404,11 +404,43 @@ public class PersonaggiREST {
 	public ResponseEntity<List<Personaggio>> getAllByIdUtenteAndRazzaOrderByDataCreazione(@RequestBody Personaggio model) {
 		
 		List<Personaggio> models = personaggiRepo.getAllByIdUtenteAndRazzaOrderByDataCreazione(model.getUtente().getId(), model.getRazza());
-		
 		return ResponseEntity.ok(models);
 	}
 	
  	
+	@CrossOrigin
+	@PostMapping(path = "/countUmanoByUtente", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Integer> countUmanoByUtente(@RequestBody Utente model) {
+		
+		Integer count = personaggiRepo.countUmanoByUtente(model.getId());
+		return ResponseEntity.ok(count);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/countHomidByUtente", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Integer> countHomidByUtente(@RequestBody Utente model) {
+		
+		Integer count = personaggiRepo.countHomidByUtente(model.getId());
+		return ResponseEntity.ok(count);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/countLupusByUtente", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Integer> countLupusByUtente(@RequestBody Utente model) {
+		
+		Integer count = personaggiRepo.countLupusByUtente(model.getId());
+		return ResponseEntity.ok(count);
+	}
+	
+	@CrossOrigin
+	@PostMapping(path = "/countMethisByUtente", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<Integer> countMethisByUtente(@RequestBody Utente model) {
+		
+		Integer count = personaggiRepo.countMetisByUtente(model.getId());
+		return ResponseEntity.ok(count);
+	}
+	
+	
 	private boolean findByNominativo(Personaggio model) {
 		model = personaggiRepo.findByNominativo(model.getNominativo());
 		if (model != null) {
@@ -417,6 +449,7 @@ public class PersonaggiREST {
 		return true;
 	
 	}
+	
 	
 
 }

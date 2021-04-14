@@ -127,4 +127,17 @@ public interface PersonaggiRepo extends CrudRepository<Personaggio, Long> {
 	
 	@Query(nativeQuery = true, value = "SELECT * FROM personaggi WHERE id_utente = :idutente AND  stato = :stato")
 	public List<Personaggio> getByIdUtenteAndStato(@Param("idutente") Long idUtente, @Param("stato") String stato);
+	
+	@Query(nativeQuery = true, value = "SELECT COUNT(razza) FROM personaggi WHERE razza = 'Umano' and id_utente = :idUtente")
+	public Integer countUmanoByUtente(@Param("idUtente") Long idUtente);
+
+	@Query(nativeQuery = true, value = "SELECT COUNT(razza) FROM personaggi WHERE razza = 'Homid' and id_utente = :idUtente")
+	public Integer countHomidByUtente(@Param("idUtente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT COUNT(razza) FROM personaggi WHERE razza = 'Lupus' and id_utente = :idUtente")
+	public Integer countLupusByUtente(@Param("idUtente") Long idUtente);
+	
+	@Query(nativeQuery = true, value = "SELECT COUNT(razza) FROM personaggi WHERE razza = 'Metis' and id_utente = :idUtente")
+	public Integer countMetisByUtente(@Param("idUtente") Long idUtente);
+	
 }
