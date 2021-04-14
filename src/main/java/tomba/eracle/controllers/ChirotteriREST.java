@@ -1,5 +1,6 @@
 package tomba.eracle.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class ChirotteriREST {
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin
 	public void invia(@RequestBody Chirottero chirottero) {
+		chirottero.setDataInvio(LocalDate.now());
 		chirotteriRepo.save(chirottero);
 	}
 
