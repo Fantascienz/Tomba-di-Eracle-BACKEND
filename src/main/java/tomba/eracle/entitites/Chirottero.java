@@ -1,6 +1,7 @@
 package tomba.eracle.entitites;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,7 +42,7 @@ public class Chirottero {
 	private boolean letto = false;
 	
 	@Column(name = "data_lettura")
-	private LocalDate dataLettura;
+	private LocalDateTime dataLettura;
 	
 	
 }
