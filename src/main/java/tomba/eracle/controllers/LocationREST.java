@@ -117,9 +117,10 @@ public class LocationREST {
 	public void cancellaLocation(@PathVariable("id") Long id) {
 		// LOCATION DA ELIMINARE
 		Optional<Location> location = locationRepo.findById(id);
-		System.out.println(location.get());
+		System.out.println(location.get().getId() + " " + location.get().getTipo());
 		Long idUmbra = direzioniRepo.findUmbraByLocation(id);
-		if (idUmbra != null) {
+		System.out.println(idUmbra);
+		if (idUmbra != null && !location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
 			Optional<Location> umbra = locationRepo.findById(idUmbra);
 			if (location.get().getMappa().equalsIgnoreCase("Esterna")
 					|| location.get().getTipo().equalsIgnoreCase("Stanza")) {
