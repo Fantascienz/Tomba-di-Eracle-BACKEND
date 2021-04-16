@@ -68,6 +68,12 @@ public class LocationREST {
 		Location location = pojo.getLocation();
 		location.setMeteoGiorno(superLocation.get().getMeteoGiorno());
 		location.setMeteoNotte(superLocation.get().getMeteoNotte());
+		if (superLocation.get().getTipo().equalsIgnoreCase("Umbra")
+				|| superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
+			location.setUrlImgGiorno(pojo.getUmbra().getUrlImgGiorno());
+			location.setUrlImgNotte(pojo.getUmbra().getUrlImgNotte());
+			location.setTipo("Stanza Umbra");
+		}
 		location = locationRepo.save(pojo.getLocation());
 		// STANZE
 		Stanza stanza = new Stanza();
@@ -85,8 +91,8 @@ public class LocationREST {
 			stanzeRepo.save(stanzaUmbra);
 			locationService.salvaDirezioniUscita(location, umbra, pojo);
 		} else {
-			location.setTipo("Stanza Umbra");
-			locationService.salvaDirezioniUscita(location, null, pojo);
+			Location specchio = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId())).orElseThrow();
+			locationService.salvaDirezioniUscita(location, specchio, pojo);
 		}
 
 	}
@@ -109,9 +115,9 @@ public class LocationREST {
 	@DeleteMapping(path = "/delete/{id}")
 	@CrossOrigin
 	public void cancellaLocation(@PathVariable("id") Long id) {
-		System.out.println("CANCELLA LOCATIONS");
 		// LOCATION DA ELIMINARE
 		Optional<Location> location = locationRepo.findById(id);
+		System.out.println(location.get());
 		Long idUmbra = direzioniRepo.findUmbraByLocation(id);
 		if (idUmbra != null) {
 			Optional<Location> umbra = locationRepo.findById(idUmbra);

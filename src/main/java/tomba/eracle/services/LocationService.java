@@ -92,8 +92,10 @@ public class LocationService {
 		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(mod.getId()));
 		if (!mod.getNome().isBlank()) {
 			location.setNome(mod.getNome());
-			umbra.get().setNome(mod.getNome());
-			locationRepo.save(umbra.get());
+			if (!location.getTipo().equalsIgnoreCase("Stanza Umbra")) {
+				umbra.get().setNome(mod.getNome());
+				locationRepo.save(umbra.get());
+			}
 		}
 		if (mod.getFasciaOraria() != null) {
 			if (mod.getFasciaOraria().equalsIgnoreCase("ripristina reale")) {
@@ -170,10 +172,12 @@ public class LocationService {
 		direzioniRepo.save(dirLocation);
 		// CREO LA DIREZIONE UMBRA SU LOCATION UMBRA
 		if (umbra != null) {
-			Direzione dirUmbra = generaDirezione(umbra);
-			setUscita(dirUmbra, cr.getDirezioneUscita(), cr.getSuperLocation(), true);
-			dirUmbra.setIdLocationSpecchio(location.getId());
-			direzioniRepo.save(dirUmbra);
+			if (!location.getTipo().equalsIgnoreCase("Stanza Umbra")) {
+				Direzione dirUmbra = generaDirezione(umbra);
+				setUscita(dirUmbra, cr.getDirezioneUscita(), cr.getSuperLocation(), true);
+				dirUmbra.setIdLocationSpecchio(location.getId());
+				direzioniRepo.save(dirUmbra);
+			}
 		}
 	}
 
