@@ -97,6 +97,10 @@ public class LocationService {
 				locationRepo.save(umbra.get());
 			}
 		}
+		
+		if(!mod.getAmbiente().isBlank()) {
+			location.setAmbiente(mod.getAmbiente());
+		}		
 		if (mod.getFasciaOraria() != null) {
 			if (mod.getFasciaOraria().equalsIgnoreCase("ripristina reale")) {
 				location.setFasciaOraria(null);

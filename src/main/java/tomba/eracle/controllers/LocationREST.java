@@ -106,7 +106,6 @@ public class LocationREST {
 	@PostMapping(path = "/update", consumes = "application/json")
 	@CrossOrigin
 	public void modificaLocation(@RequestBody LocationPOJO pojo) {
-//		Optional<Location> location = locationRepo.findById(mod.getId());
 		Optional<Location> location = locationRepo.findById(pojo.getLocation().getId());
 		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
 		locationService.modificaLocation(location.get(), pojo.getLocation());
@@ -117,9 +116,7 @@ public class LocationREST {
 	public void cancellaLocation(@PathVariable("id") Long id) {
 		// LOCATION DA ELIMINARE
 		Optional<Location> location = locationRepo.findById(id);
-		System.out.println(location.get().getId() + " " + location.get().getTipo());
 		Long idUmbra = direzioniRepo.findUmbraByLocation(id);
-		System.out.println(idUmbra);
 		if (idUmbra != null && !location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
 			Optional<Location> umbra = locationRepo.findById(idUmbra);
 			if (location.get().getMappa().equalsIgnoreCase("Esterna")
