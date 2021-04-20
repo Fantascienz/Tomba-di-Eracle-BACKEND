@@ -53,6 +53,7 @@ public class LocationREST {
 	public void creaLocation(@RequestBody LocationPOJO pojo) {
 		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
 		pojo.getLocation().setTipo("Reame");
+		pojo.getLocation().setMappa("Esterna");
 		Location location = locationRepo.save(pojo.getLocation());
 		Location umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(location.getId())).get();
 		umbra.setNome(location.getNome());
@@ -63,6 +64,8 @@ public class LocationREST {
 		umbra.setUrlAudio(pojo.getUmbra().getUrlAudio());
 		umbra.setMeteoGiorno(location.getMeteoGiorno());
 		umbra.setMeteoNotte(location.getMeteoNotte());
+		umbra.setMappa("Esterna");
+		umbra.setCreatore(location.getCreatore());
 //		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
 //		locationService.salvaDirezioniIngresso(location, umbra, pojo);
 		locationRepo.save(umbra);
