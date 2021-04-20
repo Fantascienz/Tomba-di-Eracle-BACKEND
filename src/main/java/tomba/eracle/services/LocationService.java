@@ -97,10 +97,10 @@ public class LocationService {
 				locationRepo.save(umbra.get());
 			}
 		}
-		
-		if(!mod.getAmbiente().isBlank()) {
+
+		if (!mod.getAmbiente().isBlank()) {
 			location.setAmbiente(mod.getAmbiente());
-		}		
+		}
 		if (mod.getFasciaOraria() != null) {
 			if (mod.getFasciaOraria().equalsIgnoreCase("ripristina reale")) {
 				location.setFasciaOraria(null);
@@ -324,17 +324,19 @@ public class LocationService {
 	}
 
 	private void setNomiDirezioni(Direzione direzioni) {
-		if (direzioni.getIdLocationNord() != null) {
-			direzioni.setNomeLocationNord(locationRepo.findById(direzioni.getIdLocationNord()).get().getNome());
-		}
-		if (direzioni.getIdLocationEst() != null) {
-			direzioni.setNomeLocationEst(locationRepo.findById(direzioni.getIdLocationEst()).get().getNome());
-		}
-		if (direzioni.getIdLocationSud() != null) {
-			direzioni.setNomeLocationSud(locationRepo.findById(direzioni.getIdLocationSud()).get().getNome());
-		}
-		if (direzioni.getIdLocationOvest() != null) {
-			direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
+		if (direzioni != null) {
+			if (direzioni.getIdLocationNord() != null) {
+				direzioni.setNomeLocationNord(locationRepo.findById(direzioni.getIdLocationNord()).get().getNome());
+			}
+			if (direzioni.getIdLocationEst() != null) {
+				direzioni.setNomeLocationEst(locationRepo.findById(direzioni.getIdLocationEst()).get().getNome());
+			}
+			if (direzioni.getIdLocationSud() != null) {
+				direzioni.setNomeLocationSud(locationRepo.findById(direzioni.getIdLocationSud()).get().getNome());
+			}
+			if (direzioni.getIdLocationOvest() != null) {
+				direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
+			}
 		}
 	}
 

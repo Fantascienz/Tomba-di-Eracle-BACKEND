@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +38,7 @@ public class LocationREST {
 
 	@Autowired
 	private LocationService locationService;
-
+	
 	@GetMapping(produces = "application/json")
 	@CrossOrigin
 	public List<Location> getAllLocations() {
@@ -50,12 +51,21 @@ public class LocationREST {
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin
 	public void creaLocation(@RequestBody LocationPOJO pojo) {
-		pojo.getLocation().setTipo("Reame");
-		pojo.getLocation().setMappa("Esterna");
 		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
+		pojo.getLocation().setTipo("Reame");
 		Location location = locationRepo.save(pojo.getLocation());
-		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
-		locationService.salvaDirezioniIngresso(location, umbra, pojo);
+		Location umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(location.getId())).get();
+		umbra.setNome(location.getNome());
+		umbra.setTipo("Umbra");
+		umbra.setAmbiente(location.getAmbiente());
+		umbra.setUrlImgGiorno(pojo.getUmbra().getUrlImgGiorno());
+		umbra.setUrlImgNotte(pojo.getUmbra().getUrlImgNotte());
+		umbra.setUrlAudio(pojo.getUmbra().getUrlAudio());
+		umbra.setMeteoGiorno(location.getMeteoGiorno());
+		umbra.setMeteoNotte(location.getMeteoNotte());
+//		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
+//		locationService.salvaDirezioniIngresso(location, umbra, pojo);
+		locationRepo.save(umbra);
 
 	}
 
