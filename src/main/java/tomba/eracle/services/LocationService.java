@@ -10,6 +10,7 @@ import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Meteo;
 import tomba.eracle.entitites.Stanza;
+import tomba.eracle.entitites.Utente;
 import tomba.eracle.pojo.LocationPOJO;
 import tomba.eracle.pojo.Umbra;
 import tomba.eracle.repositories.DirezioniRepo;
@@ -362,6 +363,33 @@ public class LocationService {
 			}
 		}
 
+	}
+
+	public void setUmbra(Location location, Location specchio, Umbra umbra) {
+		// TODO Auto-genumbra.setNome(location.getNome());
+		location.setTipo("Umbra");
+		location.setNome(specchio.getNome());
+		location.setAmbiente(specchio.getAmbiente());
+		location.setUrlImgGiorno(umbra.getUrlImgGiorno());
+		location.setUrlImgNotte(umbra.getUrlImgNotte());
+		location.setUrlAudio(umbra.getUrlAudio());
+		location.setMeteoGiorno(specchio.getMeteoGiorno());
+		location.setMeteoNotte(specchio.getMeteoNotte());
+		location.setMappa("Esterna");
+		location.setCreatore(specchio.getCreatore());
+
+	}
+
+	public void resettaLocationEsterna(Location location) {
+		location.setNome("/");
+		location.setAmbiente("/");
+		location.setUrlImgGiorno("/");
+		location.setUrlImgNotte(null);
+		location.setUrlAudio(null);
+		location.setUrlMinimappa(null);
+		location.setChiave(null);
+		location.setCreatore(new Utente((long) 999));
+		locationRepo.save(location);
 	}
 
 }
