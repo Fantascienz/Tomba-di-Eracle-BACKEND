@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
-import tomba.eracle.entitites.Utente;
 import tomba.eracle.pojo.LocationPOJO;
+import tomba.eracle.pojo.Room;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 import tomba.eracle.repositories.StanzeRepo;
@@ -44,7 +44,7 @@ public class LocationREST {
 	public List<Location> getAllLocations() {
 		List<Location> lista = (List<Location>) locationRepo.getAllLocations();
 		locationService.setDirezioni(lista);
-		locationService.setNumeroStanze(lista);
+//		locationService.setNumeroStanze(lista);
 		return lista;
 	}
 
@@ -58,7 +58,26 @@ public class LocationREST {
 		Location umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(location.getId())).get();
 		locationService.setUmbra(umbra, location, pojo.getUmbra());
 		locationRepo.save(umbra);
+	}
 
+	@PostMapping(path = "/rooms", consumes = "application/json")
+	@CrossOrigin
+	public void creaRoom(@RequestBody Room[] rooms) {
+		Location superLocation = locationRepo.findById(rooms[0].getSuperLocation().getId()).get();
+		Location superUmbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.getId())).get();
+		for (Room r : rooms) {
+			locationRepo.save(r.getLocation());
+			locationRepo.save(r.getLocationUmbra());
+		}
+		
+		for (Room r: rooms) {
+			direzioniRepo.save(r.getDirezioni());
+			direzioniRepo.save(r.getDirezioniUmbra());
+		}
+		superLocation.setRoom(true);
+		superUmbra.setRoom(true);
+		locationRepo.save(superLocation);
+		locationRepo.save(superUmbra);
 	}
 
 	@PostMapping(path = "/stanze", consumes = "application/json")
@@ -119,17 +138,17 @@ public class LocationREST {
 	public void cancellaEsterna(@PathVariable("id") Long id) {
 		Location location = locationRepo.findById(id).get();
 		Location specchio = locationRepo.findById(direzioniRepo.findUmbraByLocation(id)).get();
+		locationService.eliminaSottoLocation(location);
 		locationService.resettaLocationEsterna(location);
-		locationService.resettaLocationEsterna(specchio);
-		//implementa eliminazione sotto locations
+		locationService.resettaLocationEsterna(specchio);		
 	}
 
 //	@DeleteMapping(path = "/delete/{id}")   SCOMMENTA PER UTILIZZARLA PER CANCELLAZIONE SUB LOCATIONS
 //	@CrossOrigin
-//	public void cancellaLocation(@PathVariable("id") Long id) {
+//	public void cancellaLocation(Long idEsterna) {
 //		// LOCATION DA ELIMINARE
-//		Optional<Location> location = locationRepo.findById(id);
-//		Long idUmbra = direzioniRepo.findUmbraByLocation(id);
+//		Optional<Location> location = locationRepo.findById(idEsterna);
+//		Long idUmbra = direzioniRepo.findUmbraByLocation(idEsterna);
 //		if (idUmbra != null && !location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
 //			Optional<Location> umbra = locationRepo.findById(idUmbra);
 //			if (location.get().getMappa().equalsIgnoreCase("Esterna")

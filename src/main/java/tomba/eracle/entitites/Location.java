@@ -66,6 +66,8 @@ public class Location {
 	@ManyToOne
 	@JoinColumn(name = "id_creatore")
 	private Utente creatore; 
+	@JoinColumn(name = "room")
+	private boolean room;
 	
 	@Transient
 	private Direzione direzioni;

@@ -366,10 +366,13 @@ public class LocationService {
 	}
 
 	public void setUmbra(Location location, Location specchio, Umbra umbra) {
-		// TODO Auto-genumbra.setNome(location.getNome());
 		location.setTipo("Umbra");
 		location.setNome(specchio.getNome());
 		location.setAmbiente(specchio.getAmbiente());
+		if (specchio.getMappa().equalsIgnoreCase("Esterna")) {
+			location.setChiave(specchio.getChiave());
+		}
+
 		location.setUrlImgGiorno(umbra.getUrlImgGiorno());
 		location.setUrlImgNotte(umbra.getUrlImgNotte());
 		location.setUrlAudio(umbra.getUrlAudio());
@@ -390,6 +393,34 @@ public class LocationService {
 		location.setChiave(null);
 		location.setCreatore(new Utente((long) 999));
 		locationRepo.save(location);
+	}
+
+	public void eliminaSottoLocation(Location superLocation) {
+		for (int i = 1; i <= 9; i++) {
+			List<Location> midLocations = locationRepo.findMidLocationsBySuperLocation(superLocation.getId(), i);
+			if (!midLocations.isEmpty()) {
+				for (Location l : midLocations) {
+					direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
+					locationRepo.delete(l);
+				}
+			}
+		}
+		for (int i = 1; i <= 4; i++) {
+			List<Location> innerLocations = locationRepo.findInnerLocationsBySuperLocation(superLocation.getId(), i);
+			if (!innerLocations.isEmpty()) {
+				for (Location l : innerLocations) {
+					direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
+					locationRepo.delete(l);
+				}
+			}
+		}
+		List<Location> stanzeLocations = locationRepo.findStanzeByLocation(superLocation.getId());
+		if (!stanzeLocations.isEmpty()) {
+			for (Location l : stanzeLocations) {
+				direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
+				locationRepo.delete(l);
+			}
+		}
 	}
 
 }

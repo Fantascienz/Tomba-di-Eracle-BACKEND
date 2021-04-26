@@ -29,4 +29,13 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	
 	@Query(value = "SELECT * FROM locations ORDER BY id ASC",nativeQuery = true)
 	List<Location> getAllLocations ();
+	
+	@Query(value="SELECT * FROM locations WHERE id = :id + (1000 * :idCella) or id = :id + (1000 * :idCella) + 48",nativeQuery=true)
+	List<Location> findMidLocationsBySuperLocation (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+	
+	@Query(value="SELECT * FROM locations WHERE id = :id + (10000 * :idCella) or id >= :id + (10000 * :idCella) + 48",nativeQuery=true)
+	List<Location> findInnerLocationsBySuperLocation (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+	
+	@Query(value="SELECT * FROM locations WHERE id = :id + 100000",nativeQuery=true) //stanza umbra extra ha + 200000
+	List<Location> findStanzeLocationsBySuperLocation (@Param("id") Long idSuperLocation);
 }
