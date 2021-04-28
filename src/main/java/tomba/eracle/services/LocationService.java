@@ -105,6 +105,8 @@ public class LocationService {
 //						System.out.println("Cancello la sotto location " + listaIdLocations.get(i));
 						Location locationDelete = locationRepo.findById(listaIdLocations.get(i)).get();
 						locationRepo.delete(locationDelete);
+						location.setRoom(false);
+						locationRepo.save(location);
 					}
 				}
 			}
