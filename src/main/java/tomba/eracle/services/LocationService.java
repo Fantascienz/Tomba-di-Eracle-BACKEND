@@ -48,7 +48,7 @@ public class LocationService {
 						|| listaIdLocations.get(i) % 1000000 == idLocation) {
 					Stanza stanza = stanzeRepo.findStanzaBySubLocation(listaIdLocations.get(i));
 					if (stanza != null) {
-						System.out.println("cancello " + stanza.getId() + " id location " + idLocation);
+//						System.out.println("cancello " + stanza.getId() + " id location " + idLocation);
 						stanzeRepo.delete(stanza);
 					}
 				}
@@ -63,10 +63,19 @@ public class LocationService {
 						|| listaIdLocations.get(i) % 100000 == idLocation
 						|| listaIdLocations.get(i) % 1000000 == idLocation) {
 					List<Direzione> direzioni = direzioniRepo.findDirezioniRelative(idLocation);
+					System.out.println(listaIdLocations.get(i));
 					if (!direzioni.isEmpty()) {
+						System.out.println("direzioni piene");
 						for (Direzione d : direzioni) {
-							System.out.println("cancello " + d.getId() + " id location " + idLocation);
+//							System.out.println("cancello " + d.getId() + " id location " + idLocation);
 							direzioniRepo.delete(d);
+						}
+					}
+					Direzione direzioneCentrale = direzioniRepo.findByLocation(listaIdLocations.get(i));
+					if (direzioneCentrale != null) {
+						if (direzioneCentrale.getId() > 348) {
+							direzioniRepo.delete(direzioneCentrale);
+							System.out.println("Elimino direzione centrale di " + listaIdLocations.get(i));
 						}
 					}
 				}
@@ -84,16 +93,16 @@ public class LocationService {
 					if ((long) listaIdLocations.get(i) == location.getId()) {
 						if (location.getMappa().equalsIgnoreCase("Esterna")) {
 							resettaLocationEsterna(location);
-							System.out.println("resetto la stanza Esterna " + location.getId());
+//							System.out.println("resetto la stanza Esterna " + location.getId());
 						} else if (location.getMappa().equalsIgnoreCase("Stanza")) {
 							locationRepo.delete(location);
-							System.out.println("elimino la Stanza " + location.getId());
+//							System.out.println("elimino la Stanza " + location.getId());
 						} else {
-							System.out.println("setto room a false per location " + location.getId());
+//							System.out.println("setto room a false per location " + location.getId());
 							resettaLocationMacroMidInner(location);
 						}
 					} else {
-						System.out.println("Cancello la sotto location " + listaIdLocations.get(i));
+//						System.out.println("Cancello la sotto location " + listaIdLocations.get(i));
 						Location locationDelete = locationRepo.findById(listaIdLocations.get(i)).get();
 						locationRepo.delete(locationDelete);
 					}
