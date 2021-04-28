@@ -64,14 +64,24 @@ public class LocationREST {
 	@CrossOrigin
 	public void creaRoom(@RequestBody Room[] rooms) {
 		Location superLocation = locationRepo.findById(rooms[0].getSuperLocation().getId()).get();
-		Location superUmbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.getId())).get();
+		Long idSuperUmbra = direzioniRepo.findUmbraByLocation(superLocation.getId());
+		Location superUmbra = null;
+		System.out.println(rooms[0].getLocationUmbra().getId());
+		if (idSuperUmbra != null) {
+			superUmbra = locationRepo.findById(idSuperUmbra).get();
+		}
 		for (Room r : rooms) {
 			if (r.getLocation() != null) {
 				locationRepo.save(r.getLocation());
 				locationService.salvaStanza(superLocation, r.getLocation());
 			}
+
 			locationRepo.save(r.getLocationUmbra());
-			locationService.salvaStanza(superUmbra, r.getLocationUmbra());
+			if (superUmbra != null) {
+				locationService.salvaStanza(superUmbra, r.getLocationUmbra());
+			} else {
+				locationService.salvaStanza(superLocation, r.getLocationUmbra());
+			}
 		}
 
 		for (Room r : rooms) {
@@ -81,9 +91,12 @@ public class LocationREST {
 			direzioniRepo.save(r.getDirezioniUmbra());
 		}
 		superLocation.setRoom(true);
-		superUmbra.setRoom(true);
 		locationRepo.save(superLocation);
-		locationRepo.save(superUmbra);
+		if (superUmbra != null) {
+			superUmbra.setRoom(true);
+			locationRepo.save(superUmbra);
+		}
+
 	}
 
 	@PostMapping(path = "/stanze", consumes = "application/json")
@@ -147,19 +160,25 @@ public class LocationREST {
 		Location specchio = null;
 
 		if (location != null) {
-			
+
 		}
 		if (idSpecchio != null) {
 			specchio = locationRepo.findById(idSpecchio).get();
 		}
 
 		List<Long> listaIdLocations = locationRepo.getAllIdLocations();
-		
-		//ELIMINAZIONE STANZE
+
+		// ELIMINAZIONE STANZE
 		locationService.eliminaStanze(listaIdLocations, id);
 		locationService.eliminaStanze(listaIdLocations, idSpecchio);
-		
-		//ELIMINAZIONE DIREZIONI
+
+		// ELIMINAZIONE DIREZIONI
+		locationService.eliminaDirezioni(listaIdLocations, id);
+		locationService.eliminaDirezioni(listaIdLocations, idSpecchio);
+
+		// ELIMINAZIONE SOTTO-LOCATIONS
+		locationService.eliminaSottoLocations(listaIdLocations, location);
+		locationService.eliminaSottoLocations(listaIdLocations, specchio);
 
 //		locationService.eliminaStanze(location);
 //		locationService.eliminaStanze(specchio);

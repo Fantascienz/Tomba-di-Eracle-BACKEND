@@ -44,85 +44,119 @@ public class LocationService {
 		if (idLocation != null) {
 			for (int i = 0; i < listaIdLocations.size(); i++) {
 				if (listaIdLocations.get(i) % 1000 == idLocation || listaIdLocations.get(i) % 10000 == idLocation
-						|| listaIdLocations.get(i) % 100000 == idLocation || listaIdLocations.get(i) % 1000000 == idLocation) {
+						|| listaIdLocations.get(i) % 100000 == idLocation
+						|| listaIdLocations.get(i) % 1000000 == idLocation) {
 					Stanza stanza = stanzeRepo.findStanzaBySubLocation(listaIdLocations.get(i));
 					if (stanza != null) {
 						System.out.println("cancello " + stanza.getId() + " id location " + idLocation);
+						stanzeRepo.delete(stanza);
 					}
 				}
 			}
 		}
 	}
-	
+
 	public void eliminaDirezioni(List<Long> listaIdLocations, Long idLocation) {
 		if (idLocation != null) {
 			for (int i = 0; i < listaIdLocations.size(); i++) {
 				if (listaIdLocations.get(i) % 1000 == idLocation || listaIdLocations.get(i) % 10000 == idLocation
-						|| listaIdLocations.get(i) % 100000 == idLocation || listaIdLocations.get(i) % 1000000 == idLocation) {
-					Stanza stanza = stanzeRepo.findStanzaBySubLocation(listaIdLocations.get(i));
-					if (stanza != null) {
-						System.out.println("cancello " + stanza.getId() + " id location " + idLocation);
+						|| listaIdLocations.get(i) % 100000 == idLocation
+						|| listaIdLocations.get(i) % 1000000 == idLocation) {
+					List<Direzione> direzioni = direzioniRepo.findDirezioniRelative(idLocation);
+					if (!direzioni.isEmpty()) {
+						for (Direzione d : direzioni) {
+							System.out.println("cancello " + d.getId() + " id location " + idLocation);
+							direzioniRepo.delete(d);
+						}
 					}
 				}
 			}
 		}
 	}
 
-	public void cancellaLocation(Location location, Location umbra) {
-		// LOCATION STANZE DA ELIMINARE
-		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
-		List<Location> stanzeUmbra = locationRepo.findStanzeByLocation(umbra.getId());
-		eliminaStanze(stanze, stanzeUmbra);
-		// DIREZIONI DA ELIMINARE
-		Direzione direzioniLocation = direzioniRepo.findByIdLocation(location.getId());
-		Direzione direzioniUmbra = direzioniRepo.findByIdLocation(umbra.getId());
-		// STANZE DA ELIMINARE
-		Stanza stanza = stanzeRepo.findStanzaBySubLocation(location.getId());
-		Stanza stanzaUmbra = stanzeRepo.findStanzaBySubLocation(umbra.getId());
-		// DIREZIONI RELATIVE DA AGGIORNARE
-		List<Direzione> direzioniRelativeLocation = direzioniRepo.findDirezioniRelative(location.getId());
-		List<Direzione> direzioniRelativeUmbra = direzioniRepo.findDirezioniRelative(umbra.getId());
-		// AGGIORNO LE DIREZIONI RELATIVE
-		aggiornaDirezioni(direzioniRelativeLocation, location.getId());
-		aggiornaDirezioni(direzioniRelativeUmbra, umbra.getId());
-		// ELIMINO LE STANZE
-		if (stanza != null && stanzaUmbra != null) {
-			stanzeRepo.delete(stanza);
-			stanzeRepo.delete(stanzaUmbra);
+	public void eliminaSottoLocations(List<Long> listaIdLocations, Location location) {
+		if (location != null) {
+			for (int i = 0; i < listaIdLocations.size(); i++) {
+				if (listaIdLocations.get(i) % 1000 == location.getId()
+						|| listaIdLocations.get(i) % 10000 == location.getId()
+						|| listaIdLocations.get(i) % 100000 == location.getId()
+						|| listaIdLocations.get(i) % 1000000 == location.getId()) {
+					if ((long) listaIdLocations.get(i) == location.getId()) {
+						if (location.getMappa().equalsIgnoreCase("Esterna")) {
+							resettaLocationEsterna(location);
+							System.out.println("resetto la stanza Esterna " + location.getId());
+						} else if (location.getMappa().equalsIgnoreCase("Stanza")) {
+							locationRepo.delete(location);
+							System.out.println("elimino la Stanza " + location.getId());
+						} else {
+							System.out.println("setto room a false per location " + location.getId());
+							resettaLocationMacroMidInner(location);
+						}
+					} else {
+						System.out.println("Cancello la sotto location " + listaIdLocations.get(i));
+						Location locationDelete = locationRepo.findById(listaIdLocations.get(i)).get();
+						locationRepo.delete(locationDelete);
+					}
+				}
+			}
 		}
-		// ELIMINO LE DIREZIONI
-		if (direzioniLocation != null && direzioniUmbra != null) {
-			direzioniRepo.delete(direzioniLocation);
-			direzioniRepo.delete(direzioniUmbra);
-		}
-		// ELIMINO LE LOCATION
-		locationRepo.delete(location);
-		locationRepo.delete(umbra);
 	}
 
-	public void cancellaLocation(Location location) {
-		// LOCATION STANZE DA ELIMINARE
-		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
-		eliminaStanze(stanze, null);
-		// DIREZIONI DA ELIMINARE
-		Direzione direzioniLocation = direzioniRepo.findByIdLocation(location.getId());
-		// STANZE DA ELIMINARE
-		Stanza stanza = stanzeRepo.findStanzaBySubLocation(location.getId());
-		// DIREZIONI RELATIVE DA AGGIORNARE
-		List<Direzione> direzioniRelativeLocation = direzioniRepo.findDirezioniRelative(location.getId());
-		// AGGIORNO LE DIREZIONI RELATIVE
-		aggiornaDirezioni(direzioniRelativeLocation, location.getId());
-		// ELIMINO LE STANZE
-		if (stanza != null) {
-			stanzeRepo.delete(stanza);
-		}
-		// ELIMINO LE DIREZIONI
-		if (direzioniLocation != null) {
-			direzioniRepo.delete(direzioniLocation);
-		}
-		// ELIMINO LE LOCATION
-		locationRepo.delete(location);
-	}
+//	public void cancellaLocation(Location location, Location umbra) {
+//		// LOCATION STANZE DA ELIMINARE
+//		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
+//		List<Location> stanzeUmbra = locationRepo.findStanzeByLocation(umbra.getId());
+//		eliminaStanze(stanze, stanzeUmbra);
+//		// DIREZIONI DA ELIMINARE
+//		Direzione direzioniLocation = direzioniRepo.findByIdLocation(location.getId());
+//		Direzione direzioniUmbra = direzioniRepo.findByIdLocation(umbra.getId());
+//		// STANZE DA ELIMINARE
+//		Stanza stanza = stanzeRepo.findStanzaBySubLocation(location.getId());
+//		Stanza stanzaUmbra = stanzeRepo.findStanzaBySubLocation(umbra.getId());
+//		// DIREZIONI RELATIVE DA AGGIORNARE
+//		List<Direzione> direzioniRelativeLocation = direzioniRepo.findDirezioniRelative(location.getId());
+//		List<Direzione> direzioniRelativeUmbra = direzioniRepo.findDirezioniRelative(umbra.getId());
+//		// AGGIORNO LE DIREZIONI RELATIVE
+//		aggiornaDirezioni(direzioniRelativeLocation, location.getId());
+//		aggiornaDirezioni(direzioniRelativeUmbra, umbra.getId());
+//		// ELIMINO LE STANZE
+//		if (stanza != null && stanzaUmbra != null) {
+//			stanzeRepo.delete(stanza);
+//			stanzeRepo.delete(stanzaUmbra);
+//		}
+//		// ELIMINO LE DIREZIONI
+//		if (direzioniLocation != null && direzioniUmbra != null) {
+//			direzioniRepo.delete(direzioniLocation);
+//			direzioniRepo.delete(direzioniUmbra);
+//		}
+//		// ELIMINO LE LOCATION
+//		locationRepo.delete(location);
+//		locationRepo.delete(umbra);
+//	}
+
+//	public void cancellaLocation(Location location) {
+//		// LOCATION STANZE DA ELIMINARE
+//		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
+//		eliminaStanze(stanze, null);
+//		// DIREZIONI DA ELIMINARE
+//		Direzione direzioniLocation = direzioniRepo.findByIdLocation(location.getId());
+//		// STANZE DA ELIMINARE
+//		Stanza stanza = stanzeRepo.findStanzaBySubLocation(location.getId());
+//		// DIREZIONI RELATIVE DA AGGIORNARE
+//		List<Direzione> direzioniRelativeLocation = direzioniRepo.findDirezioniRelative(location.getId());
+//		// AGGIORNO LE DIREZIONI RELATIVE
+//		aggiornaDirezioni(direzioniRelativeLocation, location.getId());
+//		// ELIMINO LE STANZE
+//		if (stanza != null) {
+//			stanzeRepo.delete(stanza);
+//		}
+//		// ELIMINO LE DIREZIONI
+//		if (direzioniLocation != null) {
+//			direzioniRepo.delete(direzioniLocation);
+//		}
+//		// ELIMINO LE LOCATION
+//		locationRepo.delete(location);
+//	}
 
 	public void modificaLocation(Location location, Location mod) {
 		Optional<Location> umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(mod.getId()));
@@ -341,23 +375,23 @@ public class LocationService {
 		}
 	}
 
-	private void eliminaStanze(List<Location> stanze, List<Location> stanzeUmbra) {
-		if (stanzeUmbra != null) {
-			if ((stanze.size() == stanzeUmbra.size()) && (stanze != null && stanzeUmbra != null)
-					&& stanze.size() != 0) {
-				for (int i = 0; i < stanze.size(); i++) {
-					Location location = stanze.get(i);
-					Location umbra = stanzeUmbra.get(i);
-					cancellaLocation(location, umbra);
-				}
-			}
-		} else {
-			for (int i = 0; i < stanze.size(); i++) {
-				Location location = stanze.get(i);
-				cancellaLocation(location);
-			}
-		}
-	}
+//	private void eliminaStanze(List<Location> stanze, List<Location> stanzeUmbra) {
+//		if (stanzeUmbra != null) {
+//			if ((stanze.size() == stanzeUmbra.size()) && (stanze != null && stanzeUmbra != null)
+//					&& stanze.size() != 0) {
+//				for (int i = 0; i < stanze.size(); i++) {
+//					Location location = stanze.get(i);
+//					Location umbra = stanzeUmbra.get(i);
+//					cancellaLocation(location, umbra);
+//				}
+//			}
+//		} else {
+//			for (int i = 0; i < stanze.size(); i++) {
+//				Location location = stanze.get(i);
+//				cancellaLocation(location);
+//			}
+//		}
+//	}
 
 	private void setNomiDirezioni(Direzione direzioni) {
 //		if (direzioni != null) {
@@ -431,7 +465,7 @@ public class LocationService {
 		locationRepo.save(location);
 	}
 
-	public void resettaLocationMacro(Location location) {
+	public void resettaLocationMacroMidInner(Location location) {
 		location.setRoom(false);
 		locationRepo.save(location);
 	}
