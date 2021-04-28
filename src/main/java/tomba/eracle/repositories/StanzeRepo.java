@@ -1,5 +1,7 @@
 package tomba.eracle.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +12,9 @@ public interface StanzeRepo extends CrudRepository<Stanza, Long> {
 
 	@Query(value = "SELECT * FROM stanze WHERE id_sublocation = :id", nativeQuery = true)
 	public Stanza findStanzaBySubLocation(@Param("id") Long idLocation);
+	
+	@Query(value = "SELECT * FROM stanze WHERE id_location = :id", nativeQuery = true)
+	public List<Stanza> findStanzeByLocation(@Param("id")Long id);
 
 	@Query(value = "SELECT COUNT(*) FROM stanze WHERE id_location = :id", nativeQuery = true)
 	public int findNumeroStanzeByLocation(@Param("id") Long idLocation);

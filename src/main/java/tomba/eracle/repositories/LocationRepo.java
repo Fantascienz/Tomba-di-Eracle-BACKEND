@@ -30,12 +30,24 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	@Query(value = "SELECT * FROM locations ORDER BY id ASC",nativeQuery = true)
 	List<Location> getAllLocations ();
 	
-	@Query(value="SELECT * FROM locations WHERE id = :id + (1000 * :idCella) or id = :id + (1000 * :idCella) + 48",nativeQuery=true)
-	List<Location> findMidLocationsBySuperLocation (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+	@Query(value = "SELECT id FROM locations ORDER BY id DESC",nativeQuery = true)
+	List<Long> getAllIdLocations ();
 	
-	@Query(value="SELECT * FROM locations WHERE id = :id + (10000 * :idCella) or id >= :id + (10000 * :idCella) + 48",nativeQuery=true)
-	List<Location> findInnerLocationsBySuperLocation (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
-	
-	@Query(value="SELECT * FROM locations WHERE id = :id + 100000",nativeQuery=true) //stanza umbra extra ha + 200000
-	List<Location> findStanzeLocationsBySuperLocation (@Param("id") Long idSuperLocation);
+//	@Query(value="SELECT * FROM locations WHERE id = :id + (1000 * :idCella) OR id = :id + (1000 * :idCella) + 48",nativeQuery=true)
+//	List<Location> findMidLocationsBySuperLocationEsterna (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+//	
+//	@Query(value="SELECT * FROM locations WHERE id = :id + (10000 * :idCella) OR id = :id + (10000 * :idCella) + 48",nativeQuery=true)
+//	List<Location> findInnerLocationsBySuperLocationEsterna (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+//	
+//	@Query(value="SELECT * FROM locations WHERE id = :id + 100000 OR id = :id + 100000 + 48 OR id = :id + 200000",nativeQuery=true) //stanza umbra extra ha + 200000
+//	List<Location> findStanzeLocationsBySuperLocationEsterna (@Param("id") Long idSuperLocation);
+//	
+//	@Query(value="SELECT * FROM locations WHERE id = :id + (1000 * :idCella) OR id = :id + (1000 * :idCella) + 144",nativeQuery=true)
+//	List<Location> findMidLocationsBySuperLocationMacro (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+//	
+//	@Query(value="SELECT * FROM locations WHERE id = :id + (10000 * :idCella) OR id = :id + (10000 * :idCella) + 144",nativeQuery=true)
+//	List<Location> findInnerLocationsBySuperLocationMacro (@Param("id") Long idSuperLocation,@Param("idCella")int idCella);
+//	
+//	@Query(value="SELECT * FROM locations WHERE id = :id + 100000 OR id = :id + 100000 + 144 OR id = :id + 200000",nativeQuery=true) //stanza umbra extra ha + 200000
+//	List<Location> findStanzeLocationsBySuperLocationMacro (@Param("id") Long idSuperLocation);
 }

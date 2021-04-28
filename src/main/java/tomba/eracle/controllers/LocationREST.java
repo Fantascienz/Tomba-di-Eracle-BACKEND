@@ -66,12 +66,18 @@ public class LocationREST {
 		Location superLocation = locationRepo.findById(rooms[0].getSuperLocation().getId()).get();
 		Location superUmbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.getId())).get();
 		for (Room r : rooms) {
-			locationRepo.save(r.getLocation());
+			if (r.getLocation() != null) {
+				locationRepo.save(r.getLocation());
+				locationService.salvaStanza(superLocation, r.getLocation());
+			}
 			locationRepo.save(r.getLocationUmbra());
+			locationService.salvaStanza(superUmbra, r.getLocationUmbra());
 		}
-		
-		for (Room r: rooms) {
-			direzioniRepo.save(r.getDirezioni());
+
+		for (Room r : rooms) {
+			if (r.getLocation() != null) {
+				direzioniRepo.save(r.getDirezioni());
+			}
 			direzioniRepo.save(r.getDirezioniUmbra());
 		}
 		superLocation.setRoom(true);
@@ -137,10 +143,35 @@ public class LocationREST {
 	@CrossOrigin
 	public void cancellaEsterna(@PathVariable("id") Long id) {
 		Location location = locationRepo.findById(id).get();
-		Location specchio = locationRepo.findById(direzioniRepo.findUmbraByLocation(id)).get();
-		locationService.eliminaSottoLocation(location);
-		locationService.resettaLocationEsterna(location);
-		locationService.resettaLocationEsterna(specchio);		
+		Long idSpecchio = direzioniRepo.findUmbraByLocation(id);
+		Location specchio = null;
+
+		if (location != null) {
+			
+		}
+		if (idSpecchio != null) {
+			specchio = locationRepo.findById(idSpecchio).get();
+		}
+
+		List<Long> listaIdLocations = locationRepo.getAllIdLocations();
+		
+		//ELIMINAZIONE STANZE
+		locationService.eliminaStanze(listaIdLocations, id);
+		locationService.eliminaStanze(listaIdLocations, idSpecchio);
+		
+		//ELIMINAZIONE DIREZIONI
+
+//		locationService.eliminaStanze(location);
+//		locationService.eliminaStanze(specchio);
+//		locationService.eliminaSottoLocation(location);
+//		locationService.eliminaSottoLocation(specchio);
+//		if (!location.getMappa().equalsIgnoreCase("Macro")) {
+//			locationService.resettaLocationEsterna(location);
+//			locationService.resettaLocationEsterna(specchio);
+//		} else {
+//			locationService.resettaLocationMacro(location);
+//			locationService.resettaLocationMacro(specchio);
+//		}
 	}
 
 //	@DeleteMapping(path = "/delete/{id}")   SCOMMENTA PER UTILIZZARLA PER CANCELLAZIONE SUB LOCATIONS

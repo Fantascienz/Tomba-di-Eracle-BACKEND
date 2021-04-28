@@ -33,6 +33,41 @@ public class LocationService {
 	@Autowired
 	private MeteoRepo meteoRepo;
 
+	public void salvaStanza(Location location, Location subLocation) {
+		Stanza stanza = new Stanza();
+		stanza.setLocation(location);
+		stanza.setSubLocation(subLocation);
+		stanzeRepo.save(stanza);
+	}
+
+	public void eliminaStanze(List<Long> listaIdLocations, Long idLocation) {
+		if (idLocation != null) {
+			for (int i = 0; i < listaIdLocations.size(); i++) {
+				if (listaIdLocations.get(i) % 1000 == idLocation || listaIdLocations.get(i) % 10000 == idLocation
+						|| listaIdLocations.get(i) % 100000 == idLocation || listaIdLocations.get(i) % 1000000 == idLocation) {
+					Stanza stanza = stanzeRepo.findStanzaBySubLocation(listaIdLocations.get(i));
+					if (stanza != null) {
+						System.out.println("cancello " + stanza.getId() + " id location " + idLocation);
+					}
+				}
+			}
+		}
+	}
+	
+	public void eliminaDirezioni(List<Long> listaIdLocations, Long idLocation) {
+		if (idLocation != null) {
+			for (int i = 0; i < listaIdLocations.size(); i++) {
+				if (listaIdLocations.get(i) % 1000 == idLocation || listaIdLocations.get(i) % 10000 == idLocation
+						|| listaIdLocations.get(i) % 100000 == idLocation || listaIdLocations.get(i) % 1000000 == idLocation) {
+					Stanza stanza = stanzeRepo.findStanzaBySubLocation(listaIdLocations.get(i));
+					if (stanza != null) {
+						System.out.println("cancello " + stanza.getId() + " id location " + idLocation);
+					}
+				}
+			}
+		}
+	}
+
 	public void cancellaLocation(Location location, Location umbra) {
 		// LOCATION STANZE DA ELIMINARE
 		List<Location> stanze = locationRepo.findStanzeByLocation(location.getId());
@@ -325,20 +360,20 @@ public class LocationService {
 	}
 
 	private void setNomiDirezioni(Direzione direzioni) {
-		if (direzioni != null) {
-			if (direzioni.getIdLocationNord() != null) {
-				direzioni.setNomeLocationNord(locationRepo.findById(direzioni.getIdLocationNord()).get().getNome());
-			}
-			if (direzioni.getIdLocationEst() != null) {
-				direzioni.setNomeLocationEst(locationRepo.findById(direzioni.getIdLocationEst()).get().getNome());
-			}
-			if (direzioni.getIdLocationSud() != null) {
-				direzioni.setNomeLocationSud(locationRepo.findById(direzioni.getIdLocationSud()).get().getNome());
-			}
-			if (direzioni.getIdLocationOvest() != null) {
-				direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
-			}
-		}
+//		if (direzioni != null) {
+//			if (direzioni.getIdLocationNord() != null) {
+//				direzioni.setNomeLocationNord(locationRepo.findById(direzioni.getIdLocationNord()).get().getNome());
+//			}
+//			if (direzioni.getIdLocationEst() != null) {
+//				direzioni.setNomeLocationEst(locationRepo.findById(direzioni.getIdLocationEst()).get().getNome());
+//			}
+//			if (direzioni.getIdLocationSud() != null) {
+//				direzioni.setNomeLocationSud(locationRepo.findById(direzioni.getIdLocationSud()).get().getNome());
+//			}
+//			if (direzioni.getIdLocationOvest() != null) {
+//				direzioni.setNomeLocationOvest(locationRepo.findById(direzioni.getIdLocationOvest()).get().getNome());
+//			}
+//		}
 	}
 
 	private void setMeteoMacroMappa(Meteo giorno, Meteo notte) {
@@ -392,35 +427,63 @@ public class LocationService {
 		location.setUrlMinimappa(null);
 		location.setChiave(null);
 		location.setCreatore(new Utente((long) 999));
+		location.setRoom(false);
 		locationRepo.save(location);
 	}
 
-	public void eliminaSottoLocation(Location superLocation) {
-		for (int i = 1; i <= 9; i++) {
-			List<Location> midLocations = locationRepo.findMidLocationsBySuperLocation(superLocation.getId(), i);
-			if (!midLocations.isEmpty()) {
-				for (Location l : midLocations) {
-					direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
-					locationRepo.delete(l);
-				}
-			}
-		}
-		for (int i = 1; i <= 4; i++) {
-			List<Location> innerLocations = locationRepo.findInnerLocationsBySuperLocation(superLocation.getId(), i);
-			if (!innerLocations.isEmpty()) {
-				for (Location l : innerLocations) {
-					direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
-					locationRepo.delete(l);
-				}
-			}
-		}
-		List<Location> stanzeLocations = locationRepo.findStanzeByLocation(superLocation.getId());
-		if (!stanzeLocations.isEmpty()) {
-			for (Location l : stanzeLocations) {
-				direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
-				locationRepo.delete(l);
-			}
-		}
+	public void resettaLocationMacro(Location location) {
+		location.setRoom(false);
+		locationRepo.save(location);
 	}
+
+//	public void eliminaSottoLocation(Location superLocation) {
+//		List<Location> midLocations;
+//		List<Location> innerLocations;
+//		List<Location> stanzeLocations;
+//		for (int i = 1; i <= 9; i++) {
+//			if (superLocation.getMappa().equalsIgnoreCase("Macro")) {
+//				midLocations = locationRepo.findMidLocationsBySuperLocationMacro(superLocation.getId(), i);
+//			} else {
+//				midLocations = locationRepo.findMidLocationsBySuperLocationEsterna(superLocation.getId(), i);
+//			}
+//			if (!midLocations.isEmpty()) {
+//				for (Location l : midLocations) {
+//					eliminaSottoLocation(l);
+//					eliminaStanze(l);
+//					direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
+//					eliminaStanze(l);
+//					locationRepo.delete(l);
+//				}
+//			}
+//		}
+//		for (int i = 1; i <= 4; i++) {
+//			if (superLocation.getMappa().equalsIgnoreCase("Macro")) {
+//				innerLocations = locationRepo.findInnerLocationsBySuperLocationMacro(superLocation.getId(), i);
+//			} else {
+//				innerLocations = locationRepo.findInnerLocationsBySuperLocationEsterna(superLocation.getId(), i);
+//			}
+//			if (!innerLocations.isEmpty()) {
+//				for (Location l : innerLocations) {
+//					eliminaSottoLocation(l);
+//					direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
+//					eliminaStanze(l);
+//					locationRepo.delete(l);
+//				}
+//			}
+//		}
+//		if (superLocation.getMappa().equalsIgnoreCase("Macro")) {
+//			stanzeLocations = locationRepo.findStanzeLocationsBySuperLocationMacro(superLocation.getId());
+//		} else {
+//			stanzeLocations = locationRepo.findStanzeLocationsBySuperLocationEsterna(superLocation.getId());
+//		}
+//		if (!stanzeLocations.isEmpty()) {
+//			for (Location l : stanzeLocations) {
+//				eliminaSottoLocation(l);
+//				direzioniRepo.delete(direzioniRepo.findByLocation(l.getId()));
+//				eliminaStanze(l);
+//				locationRepo.delete(l);
+//			}
+//		}
+//	}
 
 }
