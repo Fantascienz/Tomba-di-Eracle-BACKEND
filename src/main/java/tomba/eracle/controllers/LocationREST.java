@@ -44,7 +44,7 @@ public class LocationREST {
 	public List<Location> getAllLocations() {
 		List<Location> lista = (List<Location>) locationRepo.getAllLocations();
 		locationService.setDirezioni(lista);
-//		locationService.setNumeroStanze(lista);
+		locationService.setNumeroStanze(lista);
 		return lista;
 	}
 
@@ -99,44 +99,44 @@ public class LocationREST {
 
 	}
 
-	@PostMapping(path = "/stanze", consumes = "application/json")
-	@CrossOrigin
-	public void creaStanza(@RequestBody LocationPOJO pojo, Optional<Location> superLocation, Direzione direzione) {
-		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
-		pojo.getLocation().setMappa(mappa);
-		superLocation = locationRepo.findById(pojo.getSuperLocation());
-		Location location = pojo.getLocation();
-		location.setMeteoGiorno(superLocation.get().getMeteoGiorno());
-		location.setMeteoNotte(superLocation.get().getMeteoNotte());
-		if (superLocation.get().getTipo().equalsIgnoreCase("Umbra")
-				|| superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-			location.setUrlImgGiorno(pojo.getUmbra().getUrlImgGiorno());
-			location.setUrlImgNotte(pojo.getUmbra().getUrlImgNotte());
-			location.setTipo("Stanza Umbra");
-		}
-		location = locationRepo.save(pojo.getLocation());
-		// STANZE
-		Stanza stanza = new Stanza();
-		stanza.setLocation(superLocation.get());
-		stanza.setSubLocation(location);
-		stanzeRepo.save(stanza);
-		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
-				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-			Location umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
-			umbra = locationRepo.save(umbra);
-			Stanza stanzaUmbra = new Stanza();
-			stanzaUmbra.setLocation(
-					locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId())).get());
-			stanzaUmbra.setSubLocation(umbra);
-			stanzeRepo.save(stanzaUmbra);
-			locationService.salvaDirezioniUscita(location, umbra, pojo);
-		} else {
-			Location specchio = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId()))
-					.orElseThrow();
-			locationService.salvaDirezioniUscita(location, specchio, pojo);
-		}
-
-	}
+//	@PostMapping(path = "/stanze", consumes = "application/json")
+//	@CrossOrigin
+//	public void creaStanza(@RequestBody LocationPOJO pojo, Optional<Location> superLocation, Direzione direzione) {
+//		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
+//		pojo.getLocation().setMappa(mappa);
+//		superLocation = locationRepo.findById(pojo.getSuperLocation());
+//		Location location = pojo.getLocation();
+//		location.setMeteoGiorno(superLocation.get().getMeteoGiorno());
+//		location.setMeteoNotte(superLocation.get().getMeteoNotte());
+//		if (superLocation.get().getTipo().equalsIgnoreCase("Umbra")
+//				|| superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
+//			location.setUrlImgGiorno(pojo.getUmbra().getUrlImgGiorno());
+//			location.setUrlImgNotte(pojo.getUmbra().getUrlImgNotte());
+//			location.setTipo("Stanza Umbra");
+//		}
+//		location = locationRepo.save(pojo.getLocation());
+//		// STANZE
+//		Stanza stanza = new Stanza();
+//		stanza.setLocation(superLocation.get());
+//		stanza.setSubLocation(location);
+//		stanzeRepo.save(stanza);
+//		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
+//				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
+//			Location umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
+//			umbra = locationRepo.save(umbra);
+//			Stanza stanzaUmbra = new Stanza();
+//			stanzaUmbra.setLocation(
+//					locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId())).get());
+//			stanzaUmbra.setSubLocation(umbra);
+//			stanzeRepo.save(stanzaUmbra);
+//			locationService.salvaDirezioniUscita(location, umbra, pojo);
+//		} else {
+//			Location specchio = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId()))
+//					.orElseThrow();
+//			locationService.salvaDirezioniUscita(location, specchio, pojo);
+//		}
+//
+//	}
 
 	@GetMapping(path = "/stanze", produces = "application/json")
 	@CrossOrigin
