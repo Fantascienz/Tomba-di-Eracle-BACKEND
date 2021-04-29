@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
 import tomba.eracle.pojo.LocationPOJO;
@@ -66,7 +65,6 @@ public class LocationREST {
 		Location superLocation = locationRepo.findById(rooms[0].getSuperLocation().getId()).get();
 		Long idSuperUmbra = direzioniRepo.findUmbraByLocation(superLocation.getId());
 		Location superUmbra = null;
-		System.out.println(rooms[0].getLocationUmbra().getId());
 		if (idSuperUmbra != null) {
 			superUmbra = locationRepo.findById(idSuperUmbra).get();
 		}
@@ -77,11 +75,9 @@ public class LocationREST {
 			}
 
 			locationRepo.save(r.getLocationUmbra());
-			if (superUmbra != null) {
+			if (r.getLocation() != null) {
 				locationService.salvaStanza(superUmbra, r.getLocationUmbra());
-			} else {
-				locationService.salvaStanza(superLocation, r.getLocationUmbra());
-			}
+			} else locationService.salvaStanza(superLocation, r.getLocationUmbra());
 		}
 
 		for (Room r : rooms) {
@@ -98,45 +94,6 @@ public class LocationREST {
 		}
 
 	}
-
-//	@PostMapping(path = "/stanze", consumes = "application/json")
-//	@CrossOrigin
-//	public void creaStanza(@RequestBody LocationPOJO pojo, Optional<Location> superLocation, Direzione direzione) {
-//		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
-//		pojo.getLocation().setMappa(mappa);
-//		superLocation = locationRepo.findById(pojo.getSuperLocation());
-//		Location location = pojo.getLocation();
-//		location.setMeteoGiorno(superLocation.get().getMeteoGiorno());
-//		location.setMeteoNotte(superLocation.get().getMeteoNotte());
-//		if (superLocation.get().getTipo().equalsIgnoreCase("Umbra")
-//				|| superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-//			location.setUrlImgGiorno(pojo.getUmbra().getUrlImgGiorno());
-//			location.setUrlImgNotte(pojo.getUmbra().getUrlImgNotte());
-//			location.setTipo("Stanza Umbra");
-//		}
-//		location = locationRepo.save(pojo.getLocation());
-//		// STANZE
-//		Stanza stanza = new Stanza();
-//		stanza.setLocation(superLocation.get());
-//		stanza.setSubLocation(location);
-//		stanzeRepo.save(stanza);
-//		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
-//				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-//			Location umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
-//			umbra = locationRepo.save(umbra);
-//			Stanza stanzaUmbra = new Stanza();
-//			stanzaUmbra.setLocation(
-//					locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId())).get());
-//			stanzaUmbra.setSubLocation(umbra);
-//			stanzeRepo.save(stanzaUmbra);
-//			locationService.salvaDirezioniUscita(location, umbra, pojo);
-//		} else {
-//			Location specchio = locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId()))
-//					.orElseThrow();
-//			locationService.salvaDirezioniUscita(location, specchio, pojo);
-//		}
-//
-//	}
 
 	@GetMapping(path = "/stanze", produces = "application/json")
 	@CrossOrigin
@@ -179,40 +136,7 @@ public class LocationREST {
 		// ELIMINAZIONE SOTTO-LOCATIONS
 		locationService.eliminaSottoLocations(listaIdLocations, location);
 		locationService.eliminaSottoLocations(listaIdLocations, specchio);
-
-//		locationService.eliminaStanze(location);
-//		locationService.eliminaStanze(specchio);
-//		locationService.eliminaSottoLocation(location);
-//		locationService.eliminaSottoLocation(specchio);
-//		if (!location.getMappa().equalsIgnoreCase("Macro")) {
-//			locationService.resettaLocationEsterna(location);
-//			locationService.resettaLocationEsterna(specchio);
-//		} else {
-//			locationService.resettaLocationMacro(location);
-//			locationService.resettaLocationMacro(specchio);
-//		}
 	}
-
-//	@DeleteMapping(path = "/delete/{id}")   SCOMMENTA PER UTILIZZARLA PER CANCELLAZIONE SUB LOCATIONS
-//	@CrossOrigin
-//	public void cancellaLocation(Long idEsterna) {
-//		// LOCATION DA ELIMINARE
-//		Optional<Location> location = locationRepo.findById(idEsterna);
-//		Long idUmbra = direzioniRepo.findUmbraByLocation(idEsterna);
-//		if (idUmbra != null && !location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-//			Optional<Location> umbra = locationRepo.findById(idUmbra);
-//			if (location.get().getMappa().equalsIgnoreCase("Esterna")
-//					|| location.get().getTipo().equalsIgnoreCase("Stanza")) {
-//				locationService.cancellaLocation(location.get(), umbra.get());
-//			}
-//		} else {
-//			if (location.get().getMappa().equalsIgnoreCase("Esterna")
-//					|| location.get().getTipo().equalsIgnoreCase("Stanza")
-//					|| location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-//				locationService.cancellaLocation(location.get());
-//			}
-//		}
-//	}
 
 	@GetMapping(path = "/mappa/{id}", produces = "text/plain")
 	@CrossOrigin
