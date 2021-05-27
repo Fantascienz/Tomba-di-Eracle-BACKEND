@@ -77,16 +77,15 @@ public class LocationREST {
 			if (r.getLocation() != null) {
 				locationRepo.save(r.getLocation());
 				locationService.salvaStanza(superLocation, r.getLocation());
-				if (r.getLocation().getChiave() != null) {
+				if (r.getLocation().getChiave() != null && !r.getLocation().getChiave().isBlank()) {
 					chiaviRepo.save(new ChiaveLocation(r.getLocation(), r.getLocation().getChiave()));
 				}
 			}
 
 			locationRepo.save(r.getLocationUmbra());
-			if (r.getLocationUmbra().getChiave() != null) {
+			if (r.getLocationUmbra().getChiave() != null && !r.getLocationUmbra().getChiave().isBlank()) {
 				chiaviRepo.save(new ChiaveLocation(r.getLocationUmbra(), r.getLocationUmbra().getChiave()));
 			}
-			chiaviRepo.save(new ChiaveLocation(r.getLocation(), r.getLocation().getChiave()));
 			if (r.getLocation() != null) {
 				locationService.salvaStanza(superUmbra, r.getLocationUmbra());
 			} else

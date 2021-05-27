@@ -13,23 +13,27 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name="chiavi_location")
+@Table(name = "chiavi_location")
 public class ChiaveLocation {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
-	@JoinColumn(name= "id_location")
+	@JoinColumn(name = "id_location")
 	private Location location;
-	
-	@Column(name="chiave")
+
+	@Column(name = "chiave")
 	private String chiave;
-	
-	public ChiaveLocation (Location location, String chiave) {
+
+	public ChiaveLocation(Location location, String chiave) {
 		this.location = location;
 		this.chiave = chiave;
+	}
+
+	public ChiaveLocation() {
+
 	}
 
 }

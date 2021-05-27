@@ -6,12 +6,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tomba.eracle.entitites.ChiaveLocation;
 import tomba.eracle.entitites.Direzione;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Meteo;
 import tomba.eracle.entitites.Stanza;
 import tomba.eracle.entitites.Utente;
 import tomba.eracle.pojo.Umbra;
+import tomba.eracle.repositories.ChiaviRepo;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 import tomba.eracle.repositories.MeteoRepo;
@@ -28,6 +30,9 @@ public class LocationService {
 
 	@Autowired
 	private StanzeRepo stanzeRepo;
+
+	@Autowired
+	private ChiaviRepo chiaviRepo;
 
 	@Autowired
 	private MeteoRepo meteoRepo;
@@ -61,18 +66,17 @@ public class LocationService {
 						|| listaIdLocations.get(i) % 100000 == idLocation
 						|| listaIdLocations.get(i) % 1000000 == idLocation) {
 					List<Direzione> direzioni = direzioniRepo.findDirezioniRelative(idLocation);
-					System.out.println(listaIdLocations.get(i));
 					if (!direzioni.isEmpty()) {
-						System.out.println("direzioni piene");
 						for (Direzione d : direzioni) {
-							direzioniRepo.delete(d);
+							if (d.getIdLocation() > 384) {
+								direzioniRepo.delete(d);
+							}
 						}
 					}
 					Direzione direzioneCentrale = direzioniRepo.findByLocation(listaIdLocations.get(i));
 					if (direzioneCentrale != null) {
 						if (direzioneCentrale.getId() > 348) {
 							direzioniRepo.delete(direzioneCentrale);
-							System.out.println("Elimino direzione centrale di " + listaIdLocations.get(i));
 						}
 					}
 				}
@@ -97,12 +101,20 @@ public class LocationService {
 						}
 					} else {
 						Location locationDelete = locationRepo.findById(listaIdLocations.get(i)).get();
+						eliminaChiavi(locationDelete);
 						locationRepo.delete(locationDelete);
 						location.setRoom(false);
 						locationRepo.save(location);
 					}
 				}
 			}
+		}
+	}
+
+	private void eliminaChiavi(Location location) {
+		Optional<ChiaveLocation> chiave = chiaviRepo.findByLocation(location.getId());
+		if (chiave.isPresent()) {
+			chiaviRepo.delete(chiave.get());
 		}
 	}
 
