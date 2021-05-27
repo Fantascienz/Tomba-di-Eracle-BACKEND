@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import tomba.eracle.entitites.ChiaveLocation;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
 import tomba.eracle.pojo.LocationPOJO;
 import tomba.eracle.pojo.Room;
+import tomba.eracle.repositories.ChiaviRepo;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 import tomba.eracle.repositories.StanzeRepo;
@@ -36,6 +38,9 @@ public class LocationREST {
 	private StanzeRepo stanzeRepo;
 
 	@Autowired
+	private ChiaviRepo chiaviRepo;
+
+	@Autowired
 	private LocationService locationService;
 
 	@GetMapping(produces = "application/json")
@@ -43,7 +48,7 @@ public class LocationREST {
 	public List<Location> getAllLocations() {
 		List<Location> lista = (List<Location>) locationRepo.getAllLocations();
 		locationService.setDirezioni(lista);
-		locationService.setNumeroStanze(lista);
+//		locationService.setNumeroStanze(lista);
 		return lista;
 	}
 
@@ -72,12 +77,20 @@ public class LocationREST {
 			if (r.getLocation() != null) {
 				locationRepo.save(r.getLocation());
 				locationService.salvaStanza(superLocation, r.getLocation());
+				if (r.getLocation().getChiave() != null) {
+					chiaviRepo.save(new ChiaveLocation(r.getLocation(), r.getLocation().getChiave()));
+				}
 			}
 
 			locationRepo.save(r.getLocationUmbra());
+			if (r.getLocationUmbra().getChiave() != null) {
+				chiaviRepo.save(new ChiaveLocation(r.getLocationUmbra(), r.getLocationUmbra().getChiave()));
+			}
+			chiaviRepo.save(new ChiaveLocation(r.getLocation(), r.getLocation().getChiave()));
 			if (r.getLocation() != null) {
 				locationService.salvaStanza(superUmbra, r.getLocationUmbra());
-			} else locationService.salvaStanza(superLocation, r.getLocationUmbra());
+			} else
+				locationService.salvaStanza(superLocation, r.getLocationUmbra());
 		}
 
 		for (Room r : rooms) {

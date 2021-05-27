@@ -46,7 +46,8 @@ public class Location {
 	@Column(name = "mappa")
 	private String mappa;
 	
-	@Column(name = "chiave")
+//	@Column(name = "chiave")
+	@Transient
 	private String chiave;
 	
 	@ManyToOne
