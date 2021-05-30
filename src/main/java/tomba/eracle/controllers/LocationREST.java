@@ -75,13 +75,18 @@ public class LocationREST {
 		}
 		for (Room r : rooms) {
 			if (r.getLocation() != null) {
+				if (r.getLocation().getChiave() != null && !r.getLocation().getChiave().isBlank()) {
+					r.getLocation().setHasChiave(true);
+				}
 				locationRepo.save(r.getLocation());
 				locationService.salvaStanza(superLocation, r.getLocation());
 				if (r.getLocation().getChiave() != null && !r.getLocation().getChiave().isBlank()) {
 					chiaviRepo.save(new ChiaveLocation(r.getLocation(), r.getLocation().getChiave()));
 				}
 			}
-
+			if (r.getLocationUmbra().getChiave() != null && !r.getLocationUmbra().getChiave().isBlank()) {
+				r.getLocationUmbra().setHasChiave(true);
+			}
 			locationRepo.save(r.getLocationUmbra());
 			if (r.getLocationUmbra().getChiave() != null && !r.getLocationUmbra().getChiave().isBlank()) {
 				chiaviRepo.save(new ChiaveLocation(r.getLocationUmbra(), r.getLocationUmbra().getChiave()));

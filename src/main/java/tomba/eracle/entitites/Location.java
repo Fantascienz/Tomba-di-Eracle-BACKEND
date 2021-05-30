@@ -50,6 +50,9 @@ public class Location {
 	@Transient
 	private String chiave;
 	
+	@Column(name = "chiave")
+	private Boolean hasChiave = false;
+	
 	@ManyToOne
 	@JoinColumn(name= "meteo_giorno")
 	private Meteo meteoGiorno;
