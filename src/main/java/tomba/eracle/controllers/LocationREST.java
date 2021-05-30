@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tomba.eracle.entitites.Direzione;
+import tomba.eracle.entitites.ChiaveLocation;
 import tomba.eracle.entitites.Location;
 import tomba.eracle.entitites.Stanza;
 import tomba.eracle.pojo.LocationPOJO;
+import tomba.eracle.pojo.Room;
+import tomba.eracle.repositories.ChiaviRepo;
 import tomba.eracle.repositories.DirezioniRepo;
 import tomba.eracle.repositories.LocationRepo;
 import tomba.eracle.repositories.StanzeRepo;
@@ -36,6 +38,9 @@ public class LocationREST {
 	private StanzeRepo stanzeRepo;
 
 	@Autowired
+	private ChiaviRepo chiaviRepo;
+
+	@Autowired
 	private LocationService locationService;
 
 	@GetMapping(produces = "application/json")
@@ -43,50 +48,61 @@ public class LocationREST {
 	public List<Location> getAllLocations() {
 		List<Location> lista = (List<Location>) locationRepo.getAllLocations();
 		locationService.setDirezioni(lista);
-		locationService.setNumeroStanze(lista);
+//		locationService.setNumeroStanze(lista);
 		return lista;
 	}
 
 	@PostMapping(consumes = "application/json")
 	@CrossOrigin
 	public void creaLocation(@RequestBody LocationPOJO pojo) {
+		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
 		pojo.getLocation().setTipo("Reame");
 		pojo.getLocation().setMappa("Esterna");
-		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
 		Location location = locationRepo.save(pojo.getLocation());
-		Location umbra = locationService.generaUmbra(location, pojo.getUmbra());
-		locationService.salvaDirezioniIngresso(location, umbra, pojo);
-
+		Location umbra = locationRepo.findById(direzioniRepo.findUmbraByLocation(location.getId())).get();
+		locationService.setUmbra(umbra, location, pojo.getUmbra());
+		locationRepo.save(umbra);
 	}
 
-	@PostMapping(path = "/stanze", consumes = "application/json")
+	@PostMapping(path = "/rooms", consumes = "application/json")
 	@CrossOrigin
-	public void creaStanza(@RequestBody LocationPOJO pojo, Optional<Location> superLocation, Direzione direzione) {
-		String mappa = locationRepo.findMappa(pojo.getSuperLocation());
-		pojo.getLocation().setMappa(mappa);
-		superLocation = locationRepo.findById(pojo.getSuperLocation());
-		Location location = pojo.getLocation();
-		location.setMeteoGiorno(superLocation.get().getMeteoGiorno());
-		location.setMeteoNotte(superLocation.get().getMeteoNotte());
-		location = locationRepo.save(pojo.getLocation());
-		// STANZE
-		Stanza stanza = new Stanza();
-		stanza.setLocation(superLocation.get());
-		stanza.setSubLocation(location);
-		stanzeRepo.save(stanza);
-		if (!superLocation.get().getTipo().equalsIgnoreCase("Umbra")
-				&& !superLocation.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-			Location umbra = locationService.generaUmbra(pojo.getLocation(), pojo.getUmbra());
-			umbra = locationRepo.save(umbra);
-			Stanza stanzaUmbra = new Stanza();
-			stanzaUmbra.setLocation(
-					locationRepo.findById(direzioniRepo.findUmbraByLocation(superLocation.get().getId())).get());
-			stanzaUmbra.setSubLocation(umbra);
-			stanzeRepo.save(stanzaUmbra);
-			locationService.salvaDirezioniUscita(location, umbra, pojo);
-		} else {
-			location.setTipo("Stanza Umbra");
-			locationService.salvaDirezioniUscita(location, null, pojo);
+	public void creaRoom(@RequestBody Room[] rooms) {
+		Location superLocation = locationRepo.findById(rooms[0].getSuperLocation().getId()).get();
+		Long idSuperUmbra = direzioniRepo.findUmbraByLocation(superLocation.getId());
+		Location superUmbra = null;
+		if (idSuperUmbra != null) {
+			superUmbra = locationRepo.findById(idSuperUmbra).get();
+		}
+		for (Room r : rooms) {
+			if (r.getLocation() != null) {
+				locationRepo.save(r.getLocation());
+				locationService.salvaStanza(superLocation, r.getLocation());
+				if (r.getLocation().getChiave() != null && !r.getLocation().getChiave().isBlank()) {
+					chiaviRepo.save(new ChiaveLocation(r.getLocation(), r.getLocation().getChiave()));
+				}
+			}
+
+			locationRepo.save(r.getLocationUmbra());
+			if (r.getLocationUmbra().getChiave() != null && !r.getLocationUmbra().getChiave().isBlank()) {
+				chiaviRepo.save(new ChiaveLocation(r.getLocationUmbra(), r.getLocationUmbra().getChiave()));
+			}
+			if (r.getLocation() != null) {
+				locationService.salvaStanza(superUmbra, r.getLocationUmbra());
+			} else
+				locationService.salvaStanza(superLocation, r.getLocationUmbra());
+		}
+
+		for (Room r : rooms) {
+			if (r.getLocation() != null) {
+				direzioniRepo.save(r.getDirezioni());
+			}
+			direzioniRepo.save(r.getDirezioniUmbra());
+		}
+		superLocation.setRoom(true);
+		locationRepo.save(superLocation);
+		if (superUmbra != null) {
+			superUmbra.setRoom(true);
+			locationRepo.save(superUmbra);
 		}
 
 	}
@@ -100,7 +116,6 @@ public class LocationREST {
 	@PostMapping(path = "/update", consumes = "application/json")
 	@CrossOrigin
 	public void modificaLocation(@RequestBody LocationPOJO pojo) {
-//		Optional<Location> location = locationRepo.findById(mod.getId());
 		Optional<Location> location = locationRepo.findById(pojo.getLocation().getId());
 		locationService.setMeteo(pojo.getLocation(), pojo.getMeteoGiorno(), pojo.getMeteoNotte());
 		locationService.modificaLocation(location.get(), pojo.getLocation());
@@ -108,25 +123,31 @@ public class LocationREST {
 
 	@DeleteMapping(path = "/delete/{id}")
 	@CrossOrigin
-	public void cancellaLocation(@PathVariable("id") Long id) {
-		System.out.println("CANCELLA LOCATIONS");
-		// LOCATION DA ELIMINARE
-		Optional<Location> location = locationRepo.findById(id);
-		Long idUmbra = direzioniRepo.findUmbraByLocation(id);
-		if (idUmbra != null) {
-			Optional<Location> umbra = locationRepo.findById(idUmbra);
-			if (location.get().getMappa().equalsIgnoreCase("Esterna")
-					|| location.get().getTipo().equalsIgnoreCase("Stanza")) {
-				locationService.cancellaLocation(location.get(), umbra.get());
-			}
-		} else {
-			if (location.get().getMappa().equalsIgnoreCase("Esterna")
-					|| location.get().getTipo().equalsIgnoreCase("Stanza")
-					|| location.get().getTipo().equalsIgnoreCase("Stanza Umbra")) {
-				locationService.cancellaLocation(location.get());
-			}
+	public void cancellaEsterna(@PathVariable("id") Long id) {
+		Location location = locationRepo.findById(id).get();
+		Long idSpecchio = direzioniRepo.findUmbraByLocation(id);
+		Location specchio = null;
+
+		if (location != null) {
+
+		}
+		if (idSpecchio != null) {
+			specchio = locationRepo.findById(idSpecchio).get();
 		}
 
+		List<Long> listaIdLocations = locationRepo.getAllIdLocations();
+
+		// ELIMINAZIONE STANZE
+		locationService.eliminaStanze(listaIdLocations, id);
+		locationService.eliminaStanze(listaIdLocations, idSpecchio);
+
+		// ELIMINAZIONE DIREZIONI
+		locationService.eliminaDirezioni(listaIdLocations, id);
+		locationService.eliminaDirezioni(listaIdLocations, idSpecchio);
+
+		// ELIMINAZIONE SOTTO-LOCATIONS
+		locationService.eliminaSottoLocations(listaIdLocations, location);
+		locationService.eliminaSottoLocations(listaIdLocations, specchio);
 	}
 
 	@GetMapping(path = "/mappa/{id}", produces = "text/plain")

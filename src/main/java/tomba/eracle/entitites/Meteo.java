@@ -16,6 +16,14 @@ import lombok.Data;
 @Table(name="meteo")
 public class Meteo {
 	
+	public Meteo () {
+		
+	}
+	
+	public Meteo (int id) {
+		this.id = (long) id;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name= "id")

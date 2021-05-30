@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,7 +19,6 @@ import lombok.Data;
 public class Location {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;	
 	
@@ -49,7 +46,8 @@ public class Location {
 	@Column(name = "mappa")
 	private String mappa;
 	
-	@Column(name = "chiave")
+//	@Column(name = "chiave")
+	@Transient
 	private String chiave;
 	
 	@ManyToOne
@@ -69,6 +67,8 @@ public class Location {
 	@ManyToOne
 	@JoinColumn(name = "id_creatore")
 	private Utente creatore; 
+	@JoinColumn(name = "room")
+	private boolean room;
 	
 	@Transient
 	private Direzione direzioni;

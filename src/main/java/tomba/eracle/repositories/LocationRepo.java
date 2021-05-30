@@ -29,4 +29,8 @@ public interface LocationRepo extends CrudRepository<Location, Long> {
 	
 	@Query(value = "SELECT * FROM locations ORDER BY id ASC",nativeQuery = true)
 	List<Location> getAllLocations ();
+	
+	@Query(value = "SELECT id FROM locations ORDER BY id DESC",nativeQuery = true)
+	List<Long> getAllIdLocations ();
+	
 }

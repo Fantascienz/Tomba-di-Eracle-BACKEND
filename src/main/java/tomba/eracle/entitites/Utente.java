@@ -14,7 +14,6 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 import lombok.Data;
 
 @Entity
@@ -22,52 +21,59 @@ import lombok.Data;
 @Table(name = "utenti")
 public class Utente {
 
+	public Utente(Long id) {
+		this.id = id;
+	}
+
+	public Utente() {
+
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
 	@Column(name = "nominativo")
 	private String nominativo;
-	
+
 	@Column(name = "email")
 	private String email;
-	
+
 	@Column(name = "psw")
 	private String psw;
-	
+
 	@Column(name = "tipo")
 	private String tipo;
-	
+
 	@Column(name = "data_registrazione")
 	private LocalDate dataRegistrazione;
-	
+
 	@Column(name = "max_umani")
 	private Integer maxUmani;
-	
+
 	@Column(name = "max_garou")
 	private Integer maxGarou;
-	
+
 	@Column(name = "max_png")
 	private Integer maxPng;
-	
+
 	@OneToMany(mappedBy = "utente")
 	@JsonIgnore
 	private List<Personaggio> personaggi;
-	
-	
+
 	@Transient
 	private int numeroPersonaggi;
-	
+
 	@Transient
 	private Integer contatoreUmani;
-	
+
 	@Transient
 	private Integer contatoreLupus;
-	
+
 	@Transient
 	private Integer contatoreHomid;
-	
+
 	@Transient
 	private Integer contatoreMetis;
 }
