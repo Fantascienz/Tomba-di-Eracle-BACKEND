@@ -1,0 +1,255 @@
+{
+	"info": {
+		"_postman_id": "26916883-27f1-41e2-be0a-491edc4049ba",
+		"name": "TOMBA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Stanze",
+					"item": [
+						{
+							"name": "Get All",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{path}}/locations/stanze",
+									"host": [
+										"{{path}}"
+									],
+									"path": [
+										"locations",
+										"stanze"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/locations",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Utenti",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/utenti",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"utenti"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Insert",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"nominativo\": \"Paolo Marchitto\",\r\n        \"email\": \"DACCELAMAILPAOLOMERDA@gmail.com\",\r\n        \"psw\": \"admin\",\r\n        \"tipo\": \"admin\",\r\n        \"dataRegistrazione\": \"2021-03-26\",\r\n        \"maxUmani\": 1,\r\n        \"maxGarou\": 0,\r\n        \"maxPng\": 0,\r\n        \"numeroPersonaggi\": 0,\r\n        \"contatoreUmani\": null,\r\n        \"contatoreLupus\": null,\r\n        \"contatoreHomid\": null,\r\n        \"contatoreMetis\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{path}}/utenti",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"utenti"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Personaggi",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/personaggi",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"personaggi"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chirotteri",
+			"item": [
+				{
+					"name": "Get All by ID destinatario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/chirotteri/ricevuti/10",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"chirotteri",
+								"ricevuti",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Messaggi",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/messaggi",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"messaggi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All by ID destinatario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/messaggi/1",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"messaggi",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Meteo",
+			"item": [
+				{
+					"name": "Get Meteo Reale",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/meteo/reale",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"meteo",
+								"reale"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meteo Specifico by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{path}}/meteo/2",
+							"host": [
+								"{{path}}"
+							],
+							"path": [
+								"meteo",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "path",
+			"value": "localhost:8080"
+		}
+	]
+}
